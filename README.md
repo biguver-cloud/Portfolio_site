@@ -76,12 +76,8 @@ Portfolio_site/
 - [ ] Contact セクションの追加（お問い合わせフォーム）
 - [ ] GitHub Pages または Vercel へのデプロイ
 - [ ] OGP（Open Graph Protocol）の設定
-- [ ] ダークモード対応
 - [ ] Works セクションへの制作実績の追加
-- [ ] Works セクションへの制作実績追加
 - [ ] JavaScriptコードのボリュームアップ
-- [ ] Works の内容をより充実させる
-- [ ] Career セクションに「何を学んだか」「何を経験したか」など具体的な内容を追加
 
 ---
 
