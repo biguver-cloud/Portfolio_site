@@ -1397,6 +1397,14 @@ ul {
     background-color: var(--c-bg-soft);
 }
 
+.exp-demo-video {
+    display: block;
+    width: 100%;
+    height: auto;
+    border: 1px solid var(--c-line);
+    background-color: #0d1b2a;
+}
+
 .exp-demo-credit {
     margin: 12px 0 0;
     font-size: 0.78rem;
