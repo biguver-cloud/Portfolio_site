@@ -607,6 +607,8 @@ ul {
     margin: 0;
     letter-spacing: 0.05em;
     line-height: 1.4;
+    word-break: keep-all;
+    overflow-wrap: break-word;
 }
 
 .timeline-label {
@@ -1351,6 +1353,8 @@ ul {
     color: var(--c-text);
     margin-bottom: 40px;
     letter-spacing: 0.05em;
+    word-break: keep-all;
+    overflow-wrap: break-word;
 }
 
 .hobby-lead-nowrap {
@@ -1361,6 +1365,28 @@ ul {
 @media (max-width: 760px) {
     .hobby-lead-nowrap {
         white-space: normal;
+    }
+}
+
+/* ----- Mobile layout fixes (PC unchanged) ----- */
+@media (max-width: 768px) {
+    /* Skills legend: keep two items side-by-side with even spacing */
+    .skills-legend {
+        flex-wrap: nowrap;
+        justify-content: center;
+        gap: 18px;
+    }
+
+    .skills-legend-item {
+        font-size: 0.74rem;
+        gap: 8px;
+        white-space: nowrap;
+    }
+
+    /* Hobby lead: smaller text for natural wrapping, keep centered */
+    .hobby-lead {
+        font-size: 1rem;
+        line-height: 1.8;
     }
 }
 
