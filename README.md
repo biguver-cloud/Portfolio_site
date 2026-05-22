@@ -64,19 +64,9 @@ demosite/
 | フォント | Google Fonts（Fraunces / Noto Sans JP / Noto Serif JP） |
 | アニメーション | IntersectionObserver API / requestAnimationFrame |
 | レスポンシブ | メディアクエリ（PC / タブレット / スマホ対応） |
+| フォーム | Formspree |
 | ホスティング | Cloudflare Workers |
-| ビルドツール | なし（ビルド不要） |
 | バージョン管理 | Git / GitHub |
-
----
-
-## 🔮 今後の拡張予定・改善点
-
-- [ ] Contact セクションの追加（お問い合わせフォーム）
-- [x] Cloudflare Workers へのデプロイ済み
-- [ ] OGP（Open Graph Protocol）の設定
-- [ ] Works セクションへの制作実績の追加
-- [ ] JavaScript コードのボリュームアップ
 
 ---
 
