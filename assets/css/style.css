@@ -1126,6 +1126,24 @@ ul {
     letter-spacing: 0.05em;
 }
 
+/* App-name sub line (matches About "Shinichiro Himeno") */
+.exp-title-app {
+    display: block;
+    font-family: var(--font-en);
+    font-style: italic;
+    font-size: 1rem;
+    font-weight: 400;
+    color: var(--c-text-soft);
+    letter-spacing: 0.06em;
+    margin-top: 10px;
+    text-transform: none;
+}
+
+/* Second sub line: tighten spacing so the two lines read as a group */
+.exp-title-app-note {
+    margin-top: 4px;
+}
+
 .exp-status {
     font-family: var(--font-en);
     font-size: 0.65rem;
@@ -1336,6 +1354,58 @@ ul {
     font-weight: 400;
 }
 
+/* ----- Development Experience: demo (GIF) ----- */
+.exp-block-title-demo {
+    text-transform: none;
+}
+
+.exp-demo {
+    margin-top: 4px;
+    display: flex;
+    flex-direction: column;
+    gap: 36px;
+}
+
+/* 2-column row: icon (left) + screenshot (right) */
+.exp-demo-row {
+    display: flex;
+    gap: 20px;
+    align-items: stretch;
+}
+
+.exp-demo .exp-demo-row img {
+    width: 50%;
+    height: auto;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+}
+
+.exp-demo-caption {
+    font-family: var(--font-en);
+    font-size: 0.72rem;
+    font-weight: 400;
+    letter-spacing: 0.3em;
+    color: var(--c-text-mute);
+    margin: 0 0 16px;
+}
+
+.exp-demo img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border: 1px solid var(--c-line);
+    background-color: var(--c-bg-soft);
+}
+
+.exp-demo-credit {
+    margin: 12px 0 0;
+    font-size: 0.78rem;
+    line-height: 1.7;
+    letter-spacing: 0.04em;
+    color: var(--c-text-mute);
+    font-style: italic;
+}
+
 /* ============================
    Hobby Section
 ============================= */
@@ -1387,6 +1457,17 @@ ul {
     .hobby-lead {
         font-size: 1rem;
         line-height: 1.8;
+    }
+
+    /* Playout Pro demo: stack icon & screenshot vertically, full width */
+    .exp-demo-row {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .exp-demo .exp-demo-row img {
+        width: 100%;
+        aspect-ratio: auto;
     }
 }
 
