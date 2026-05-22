@@ -57,7 +57,16 @@ Portfolio_site/
 
 ---
 
-## 🛠️ 技術スタック
+## � デプロイ
+
+| 項目 | 内容 |
+|---|---|
+| ホスティング | Cloudflare Workers |
+| URL | https://long-firefly-b5db.biguver.workers.dev/ |
+
+---
+
+## �🛠️ 技術スタック
 
 | カテゴリ | 技術 |
 |---|---|
@@ -74,7 +83,7 @@ Portfolio_site/
 ## 🔮 今後の拡張予定・改善点
 
 - [ ] Contact セクションの追加（お問い合わせフォーム）
-- [ ] GitHub Pages または Vercel へのデプロイ
+- [x] Cloudflare Workers へのデプロイ済み
 - [ ] OGP（Open Graph Protocol）の設定
 - [ ] Works セクションへの制作実績の追加
 - [ ] JavaScriptコードのボリュームアップ

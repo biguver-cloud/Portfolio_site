@@ -1453,6 +1453,8 @@ ul {
         flex-wrap: nowrap;
         justify-content: center;
         gap: 18px;
+        /* ease the negative top margin so it no longer overlaps "スキルセット" */
+        margin-top: -60px;
     }
 
     .skills-legend-item {
@@ -1476,6 +1478,13 @@ ul {
     .exp-demo .exp-demo-row img {
         width: 100%;
         aspect-ratio: auto;
+    }
+
+    /* exp-note: left-align & natural wrapping (keep ※ together with body text) */
+    .exp-note {
+        text-align: left;
+        word-break: break-word;
+        overflow-wrap: break-word;
     }
 }
 
