@@ -139,6 +139,62 @@ window.addEventListener('resize', () => {
 });
 
 // ============================
+// Contact form (Formspree) submission
+// ============================
+const contactForm = document.getElementById('contactForm');
+
+if (contactForm) {
+    const feedback = document.getElementById('formFeedback');
+    const submitBtn = contactForm.querySelector('.btn-submit');
+    const defaultBtnText = submitBtn ? submitBtn.textContent : '送信する';
+
+    const showFeedback = (message, type) => {
+        if (!feedback) return;
+        feedback.textContent = message;
+        feedback.classList.remove('is-success', 'is-error');
+        if (type) feedback.classList.add('is-' + type);
+        feedback.classList.add('is-visible');
+    };
+
+    contactForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.textContent = '送信中…';
+        }
+        showFeedback('', null);
+
+        try {
+            const response = await fetch(contactForm.action, {
+                method: 'POST',
+                body: new FormData(contactForm),
+                headers: { Accept: 'application/json' },
+            });
+
+            if (response.ok) {
+                contactForm.reset();
+                showFeedback('送信しました。ありがとうございます。', 'success');
+            } else {
+                const data = await response.json().catch(() => ({}));
+                const msg =
+                    data && data.errors && data.errors.length
+                        ? data.errors.map((err) => err.message).join(' ')
+                        : '送信に失敗しました。時間をおいて再度お試しください。';
+                showFeedback(msg, 'error');
+            }
+        } catch (err) {
+            showFeedback('通信エラーが発生しました。ネットワークをご確認のうえ、再度お試しください。', 'error');
+        } finally {
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.textContent = defaultBtnText;
+            }
+        }
+    });
+}
+
+// ============================
 // Subtle parallax on hero background
 // ============================
 const heroBg = document.querySelector('.hero-bg');

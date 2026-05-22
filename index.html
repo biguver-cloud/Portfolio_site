@@ -24,6 +24,7 @@
                     <li><a href="#skills">Skills</a></li>
                     <li><a href="#works">Works</a></li>
                     <li><a href="#hobby">Hobby</a></li>
+                    <li><a href="#contact">Contact</a></li>
                 </ul>
             </nav>
             <button class="nav-toggle" id="navToggle" aria-label="メニュー">
@@ -110,11 +111,13 @@
                     <div class="timeline-content">
                         <span class="timeline-period">now</span>
                         <div class="timeline-head">
-                            <h3 class="timeline-company">AIエンジニアを目指して挑戦中</h3>
+                            <h3 class="timeline-company">AIエンジニアを目指して挑戦中！</h3>
                             <span class="timeline-label">CURRENT</span>
                         </div>
                         <p class="timeline-desc">
-                            Python学習・ポートフォリオ開発・G検定に挑戦
+                            Python・LangChain・RAGを活用したポートフォリオ開発を継続中。<br>
+                            副業にて受託開発案件を2件経験。<br>
+                            G検定の学習を通じてAI・機械学習領域の知識を継続的にインプット中。
                         </p>
                     </div>
                 </div>
@@ -127,8 +130,10 @@
                             <span class="timeline-label">LEARNING</span>
                         </div>
                         <p class="timeline-desc">
-                            修了後は副業・ポートフォリオを通じて開発経験を積む
+                            生成AIエンジニアコース（8週間コース / 期間：10月初旬〜12月中旬）<br>
+                            Python・LangChain・RAGシステム・AIエージェント開発を習得。
                         </p>
+                        <a href="https://www.openbadge-global.com/ns/portal/openbadge/public/assertions/user/Z1F3MjB3YjlITEdtWnVMUThqMG9oZz09" class="timeline-link" target="_blank" rel="noopener">オープンバッジはこちら →</a>
                     </div>
                 </div>
                 <div class="timeline-item fade-in-up">
@@ -140,7 +145,10 @@
                             <span class="timeline-label timeline-label-accent">TURNING POINT</span>
                         </div>
                         <p class="timeline-desc">
-                            GRIT賞受賞・ここがエンジニア転向の起点
+                            メンタルヘルスに特化したAIを自作して応募。<br>
+                            悩み相談・CBTテスト・睡眠／食生活管理機能を実装。<br>
+                            メンタルヘルスという重要なテーマへの自主的な挑戦が評価され、GRIT賞を受賞。<br>
+                            ここがエンジニア転向の起点となった。
                         </p>
                     </div>
                 </div>
@@ -153,7 +161,8 @@
                             <span class="timeline-label">CURRENT ROLE</span>
                         </div>
                         <p class="timeline-desc">
-                            格安SIMのオンラインショップにて顧客対応
+                            格安SIMのオンラインショップにて顧客対応を担当。<br>
+                            新人教育・KPI進捗管理など、現場のオペレーション全般を担っている。
                         </p>
                     </div>
                 </div>
@@ -166,7 +175,8 @@
                             <span class="timeline-label">CAREER</span>
                         </div>
                         <p class="timeline-desc">
-                            採用・業務プロセス支援
+                            求人媒体の進捗管理・新卒／中途採用支援を担当。<br>
+                            10名規模のチームマネジメントや研修担当など、幅広い業務を経験。
                         </p>
                     </div>
                 </div>
@@ -597,6 +607,50 @@
         </div>
         <div class="container">
             <!-- intentionally empty for spacing -->
+        </div>
+    </section>
+
+    <!-- ============================
+         Contact Section
+    ============================= -->
+    <section class="section section-alt" id="contact">
+        <div class="container">
+            <div class="section-head fade-in-up">
+                <span class="section-num">— 06</span>
+                <h2 class="section-title">Contact</h2>
+                <p class="section-sub">お問い合わせ</p>
+            </div>
+            <div class="contact-wrap fade-in-up">
+                <p class="contact-lead">
+                    ご連絡・ご相談などございましたら、<br>
+                    下記フォームよりお気軽にお問い合わせください。
+                </p>
+                <form class="contact-form" id="contactForm" action="https://formspree.io/f/xlgvbqww" method="POST">
+                    <div class="form-row">
+                        <label class="form-label" for="name">お名前</label>
+                        <input class="form-input" type="text" id="name" name="name" placeholder="山田 太郎" required>
+                    </div>
+                    <div class="form-row">
+                        <label class="form-label" for="email">メールアドレス</label>
+                        <input class="form-input" type="email" id="email" name="email" placeholder="you@example.com" required>
+                    </div>
+                    <div class="form-row">
+                        <label class="form-label" for="message">メッセージ</label>
+                        <textarea class="form-input form-textarea" id="message" name="message" rows="6" placeholder="お問い合わせ内容をご記入ください。" required></textarea>
+                    </div>
+                    <div class="form-privacy">
+                        <p class="form-privacy-title">【個人情報の取り扱いについて】</p>
+                        <p class="form-privacy-body">
+                            お問い合わせいただいたお名前・メールアドレスは、返信目的のみに使用します。<br>
+                            なお、送信データはFormspree（第三者サービス）を経由して受信するため、同サービスのプライバシーポリシーも適用されます。
+                        </p>
+                    </div>
+                    <div class="form-submit-row">
+                        <button class="btn-submit" type="submit">送信する</button>
+                    </div>
+                    <p class="form-feedback" id="formFeedback" role="status" aria-live="polite"></p>
+                </form>
+            </div>
         </div>
     </section>
 

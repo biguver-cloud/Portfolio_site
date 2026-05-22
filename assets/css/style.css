@@ -634,6 +634,22 @@ ul {
     font-weight: 400;
 }
 
+.timeline-link {
+    display: inline-block;
+    margin-top: 14px;
+    font-size: 0.88rem;
+    color: var(--c-accent);
+    letter-spacing: 0.04em;
+    font-weight: 500;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.4s var(--ease), opacity 0.4s var(--ease);
+}
+
+.timeline-link:hover {
+    border-bottom-color: var(--c-accent);
+    opacity: 0.8;
+}
+
 /* ============================
    Skills Section
 ============================= */
@@ -1428,6 +1444,167 @@ ul {
 }
 
 /* ============================
+   Contact Section
+============================= */
+.contact-wrap {
+    max-width: 680px;
+    margin: 0 auto;
+}
+
+.contact-lead {
+    text-align: center;
+    font-size: 1rem;
+    line-height: 1.9;
+    color: var(--c-text-soft);
+    margin-bottom: 80px;
+    font-weight: 400;
+}
+
+.contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: 48px;
+}
+
+.form-row {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.form-label {
+    font-family: var(--font-en);
+    font-size: 0.78rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--c-text-soft);
+    font-weight: 500;
+}
+
+.form-input {
+    width: 100%;
+    font-family: var(--font-jp);
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.8;
+    letter-spacing: 0.04em;
+    color: var(--c-text);
+    background-color: transparent;
+    border: none;
+    border-bottom: 1px solid var(--c-line);
+    padding: 12px 2px;
+    transition: border-color 0.5s var(--ease);
+}
+
+.form-input::placeholder {
+    color: var(--c-text-mute);
+    opacity: 0.6;
+}
+
+.form-input:focus {
+    outline: none;
+    border-bottom-color: var(--c-accent);
+}
+
+.form-textarea {
+    resize: vertical;
+    min-height: 120px;
+    border: 1px solid var(--c-line);
+    padding: 16px;
+}
+
+.form-textarea:focus {
+    border-color: var(--c-accent);
+}
+
+.form-privacy {
+    margin-top: 8px;
+    padding: 24px 28px;
+    background-color: var(--c-bg);
+    border: 1px solid var(--c-line);
+}
+
+.form-privacy-title {
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    color: var(--c-text-soft);
+    margin-bottom: 10px;
+}
+
+.form-privacy-body {
+    font-size: 0.78rem;
+    line-height: 1.85;
+    letter-spacing: 0.04em;
+    color: var(--c-text-mute);
+    margin: 0;
+}
+
+.form-submit-row {
+    margin-top: 8px;
+    text-align: center;
+}
+
+.btn-submit {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    font-family: var(--font-en);
+    font-size: 0.82rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    font-weight: 400;
+    color: var(--c-text);
+    background: none;
+    border: 1px solid var(--c-text);
+    border-radius: 0;
+    padding: 20px 64px;
+    cursor: pointer;
+    transition: color 0.5s var(--ease), background-color 0.5s var(--ease), border-color 0.5s var(--ease), letter-spacing 0.5s var(--ease);
+}
+
+.btn-submit:hover {
+    color: var(--c-bg);
+    background-color: var(--c-text);
+    letter-spacing: 0.32em;
+}
+
+.btn-submit:disabled {
+    opacity: 0.5;
+    cursor: default;
+    letter-spacing: 0.25em;
+    color: var(--c-text);
+    background: none;
+}
+
+.form-feedback {
+    text-align: center;
+    font-size: 0.92rem;
+    line-height: 1.9;
+    letter-spacing: 0.04em;
+    color: var(--c-text-soft);
+    margin: 0;
+    min-height: 1.2em;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 0.6s var(--ease), transform 0.6s var(--ease);
+}
+
+.form-feedback.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.form-feedback.is-success {
+    color: var(--c-natural);
+}
+
+.form-feedback.is-error {
+    color: #c0492f;
+}
+
+/* ============================
    Footer
 ============================= */
 .footer {
@@ -1726,6 +1903,19 @@ ul {
 
     .hobby-intro {
         margin-bottom: 100px;
+    }
+
+    .contact-lead {
+        margin-bottom: 56px;
+    }
+
+    .contact-form {
+        gap: 36px;
+    }
+
+    .btn-submit {
+        width: 100%;
+        padding: 18px 32px;
     }
 
     .work-body {
