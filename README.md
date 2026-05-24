@@ -64,7 +64,6 @@ demosite/
 | フォント | Google Fonts（Fraunces / Noto Sans JP / Noto Serif JP） |
 | アニメーション | IntersectionObserver API / requestAnimationFrame |
 | レスポンシブ | メディアクエリ（PC / タブレット / スマホ対応） |
-| フォーム | Formspree |
 | ホスティング | Cloudflare Workers |
 | バージョン管理 | Git / GitHub |
 
