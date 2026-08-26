@@ -38,3 +38,10 @@ assets/images/hero/青島ベンチ.jpg
 assets/images/hobby/kyoujuro_rengoku.jpg
 assets/images/hobby/onepiece_firm_red.jpg
 assets/images/hobby/jujutsukaisenn.jpg
+
+# wrangler files
+.wrangler
+.dev.vars*
+!.dev.vars.example
+.env*
+!.env.example
