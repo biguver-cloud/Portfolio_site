@@ -20,7 +20,7 @@ HTML / CSS / JavaScript のみで構成したシングルページサイトで�
 | 項目 | 内容 |
 |---|---|
 | ホスティング | Cloudflare Workers |
-| URL | https://long-firefly-b5db.biguver.workers.dev/ |
+| URL | https://demosite.biguver.workers.dev/ |
 
 ---
 
