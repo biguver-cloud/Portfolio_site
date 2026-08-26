@@ -48,6 +48,8 @@ html {
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
     font-size: 18px;
+    max-width: 100%;
+    overflow-x: hidden;
 }
 
 body {
@@ -58,6 +60,7 @@ body {
     font-weight: 400;
     line-height: 1.9;
     letter-spacing: 0.05em;
+    max-width: 100%;
     overflow-x: hidden;
     font-optical-sizing: auto;
 }
@@ -355,6 +358,19 @@ ul {
     color: var(--c-text-on-dark);
     opacity: 0.9;
     padding-left: 0.55em;
+}
+
+/* PC only: title centered, SCROLL pinned to bottom, no overlap on short screens */
+@media (min-width: 769px) {
+    .hero {
+        min-height: 100svh;
+        padding-bottom: 120px;
+    }
+
+    /* keep SCROLL absolutely anchored near the bottom (base style), nudge up a bit */
+    .hero-scroll {
+        bottom: 40px;
+    }
 }
 
 .hero-scroll {
@@ -1448,13 +1464,36 @@ ul {
 
 /* ----- Mobile layout fixes (PC unchanged) ----- */
 @media (max-width: 768px) {
-    /* Skills legend: keep two items side-by-side with even spacing */
+    /* Hero EN title: cap size on mobile so long lines fit the screen width */
+    .hero-title-en {
+        font-size: clamp(1.9rem, 9vw, 4rem);
+    }
+
+    /* Hero SCROLL: center reliably (transform is overridden by .fade-in,
+       so center via full-width box + align-items instead of translateX) */
+    .hero-scroll {
+        left: 0;
+        right: 0;
+        transform: none;
+        text-align: center;
+        align-items: center;
+    }
+
+    /* Hero JP subtitle: shrink size & tracking so it fits on one line */
+    .hero-title-jp {
+        font-size: 0.75rem;
+        letter-spacing: 0.3em;
+    }
+
+    /* Skills legend: horizontal when it fits, wraps gracefully on very narrow
+       screens (prevents horizontal overflow), even spacing */
     .skills-legend {
-        flex-wrap: nowrap;
+        flex-wrap: wrap;
         justify-content: center;
-        gap: 18px;
+        gap: 12px 20px;
         /* ease the negative top margin so it no longer overlaps "スキルセット" */
         margin-top: -60px;
+        max-width: 100%;
     }
 
     .skills-legend-item {
@@ -1463,10 +1502,27 @@ ul {
         white-space: nowrap;
     }
 
-    /* Hobby lead: smaller text for natural wrapping, keep centered */
-    .hobby-lead {
-        font-size: 1rem;
+    /* Hobby text — use #hobby (id) specificity so it reliably beats the
+       base .hobby-note rule that is declared later in the stylesheet */
+    #hobby .hobby-intro {
+        padding: 0 24px;
+        text-align: center;
+        word-break: break-word;
+        overflow-wrap: break-word;
+    }
+
+    #hobby .hobby-lead,
+    #hobby .hobby-note {
+        font-size: 0.9rem;
         line-height: 1.8;
+        text-align: center;
+        white-space: normal;
+        word-break: break-word;
+        overflow-wrap: break-word;
+    }
+
+    #hobby .hobby-lead-nowrap {
+        white-space: normal;
     }
 
     /* Playout Pro demo: stack icon & screenshot vertically, full width */
@@ -1517,9 +1573,8 @@ ul {
 
 /* Full-bleed gallery */
 .hobby-gallery-fullbleed {
-    width: 100vw;
-    margin-left: 50%;
-    transform: translateX(-50%);
+    width: 100%;
+    max-width: 100%;
     padding: 0 40px;
 }
 
@@ -1580,7 +1635,7 @@ ul {
     font-size: 1rem;
     line-height: 1.9;
     color: var(--c-text-soft);
-    margin-bottom: 80px;
+    margin-bottom: 0;
     font-weight: 400;
 }
 
@@ -1979,7 +2034,12 @@ ul {
     }
 
     .hero-scroll {
-        display: none;
+        display: flex;
+        bottom: 28px;
+    }
+
+    .hero-scroll span {
+        font-size: 0.6rem;
     }
 
     .about-image-caption {
@@ -2030,16 +2090,7 @@ ul {
     }
 
     .contact-lead {
-        margin-bottom: 56px;
-    }
-
-    .contact-form {
-        gap: 36px;
-    }
-
-    .btn-submit {
-        width: 100%;
-        padding: 18px 32px;
+        margin-bottom: 0;
     }
 
     .work-body {
