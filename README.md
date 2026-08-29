@@ -20,7 +20,7 @@ HTML / CSS / JavaScript のみで構成したシングルページサイトで�
 | 項目 | 内容 |
 |---|---|
 | ホスティング | Cloudflare Workers |
-| URL | https://demosite.biguver.workers.dev/ |
+| URL | https://portfolio-site.biguver.workers.dev/ |
 
 ---
 
@@ -36,8 +36,9 @@ HTML / CSS / JavaScript のみで構成したシングルページサイトで�
 ## 📁 ディレクトリ構成
 
 ```
-demosite/
+portfolio-site/
 ├── index.html              # メインHTML（全セクション）
+├── wrangler.jsonc          # Cloudflare Workers（静的アセット配信）設定
 ├── .gitignore
 ├── README.md
 └── assets/
