@@ -90,6 +90,110 @@ document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
 });
 
 // ============================
+// Scroll spy (highlight the nav link of the section in view)
+// ============================
+const spyLinks = Array.from(document.querySelectorAll('.nav-list a[href^="#"]'));
+
+if (spyLinks.length) {
+    const spySections = spyLinks
+        .map((link) => document.getElementById(link.getAttribute('href').slice(1)))
+        .filter(Boolean);
+
+    const inView = new Set();
+    let spyLock = false; // held while a click-triggered smooth scroll is running
+    let spyLockTimer = null;
+
+    const setActiveLink = (id) => {
+        spyLinks.forEach((link) => {
+            const isActive = link.getAttribute('href') === `#${id}`;
+            link.classList.toggle('is-active', isActive);
+            if (isActive) {
+                link.setAttribute('aria-current', 'true');
+            } else {
+                link.removeAttribute('aria-current');
+            }
+        });
+    };
+
+    const updateFromView = () => {
+        if (spyLock) return;
+        // Topmost section (document order) currently crossing the detection band
+        const active = spySections.find((section) => inView.has(section.id));
+        setActiveLink(active ? active.id : null);
+    };
+
+    const spyObserver = new IntersectionObserver(
+        (entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    inView.add(entry.target.id);
+                } else {
+                    inView.delete(entry.target.id);
+                }
+            });
+            updateFromView();
+        },
+        {
+            // Thin band across the upper-middle of the viewport, so the
+            // highlight switches as a section's top passes ~40% down the screen.
+            rootMargin: '-40% 0px -55% 0px',
+            threshold: 0,
+        }
+    );
+
+    spySections.forEach((section) => spyObserver.observe(section));
+
+    // The last section can be too short to reach the band, so light up its
+    // link once the page is scrolled all the way to the bottom.
+    let bottomTicking = false;
+    const checkBottom = () => {
+        if (spyLock || !spySections.length) return;
+        const atBottom =
+            window.innerHeight + window.scrollY >=
+            document.documentElement.scrollHeight - 2;
+        if (atBottom) {
+            setActiveLink(spySections[spySections.length - 1].id);
+        }
+    };
+    window.addEventListener(
+        'scroll',
+        () => {
+            if (!bottomTicking) {
+                window.requestAnimationFrame(() => {
+                    checkBottom();
+                    bottomTicking = false;
+                });
+                bottomTicking = true;
+            }
+        },
+        { passive: true }
+    );
+
+    // On nav click, highlight the target right away and keep it fixed until
+    // the smooth scroll settles, so passed-over sections don't flash active.
+    const releaseSpyLock = () => {
+        spyLock = false;
+        if (spyLockTimer) {
+            clearTimeout(spyLockTimer);
+            spyLockTimer = null;
+        }
+        updateFromView();
+    };
+
+    spyLinks.forEach((link) => {
+        link.addEventListener('click', () => {
+            const id = link.getAttribute('href').slice(1);
+            if (!document.getElementById(id)) return;
+            setActiveLink(id);
+            spyLock = true;
+            if (spyLockTimer) clearTimeout(spyLockTimer);
+            spyLockTimer = setTimeout(releaseSpyLock, 700);
+            window.addEventListener('scrollend', releaseSpyLock, { once: true });
+        });
+    });
+}
+
+// ============================
 // Development Experience Accordion
 // ============================
 const expItems = document.querySelectorAll('.exp-item');
