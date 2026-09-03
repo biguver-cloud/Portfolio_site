@@ -249,6 +249,18 @@ ul {
     transform-origin: left;
 }
 
+/* Scroll spy: current section */
+.nav-list a.is-active {
+    font-weight: 500;
+}
+
+.nav-list a.is-active::after {
+    transform: scaleX(1);
+    transform-origin: left;
+    height: 2px;
+    background-color: var(--c-accent);
+}
+
 .nav-toggle {
     display: none;
     background: none;
