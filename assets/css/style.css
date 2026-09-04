@@ -877,6 +877,8 @@ ul {
     background: var(--c-text);
 }
 
+/* Bar width & stagger are driven by JS from each row's data-level
+   (see "Skill bars" in script.js). These rules are a no-JS fallback. */
 .skill-block.is-visible .skill-row-practical .skill-row-bar-fill {
     width: 80%;
 }
@@ -885,12 +887,11 @@ ul {
     width: 50%;
 }
 
-.skill-block.is-visible .skill-row:nth-child(1) .skill-row-bar-fill { transition-delay: 0.1s; }
-.skill-block.is-visible .skill-row:nth-child(2) .skill-row-bar-fill { transition-delay: 0.2s; }
-.skill-block.is-visible .skill-row:nth-child(3) .skill-row-bar-fill { transition-delay: 0.3s; }
-.skill-block.is-visible .skill-row:nth-child(4) .skill-row-bar-fill { transition-delay: 0.4s; }
-.skill-block.is-visible .skill-row:nth-child(5) .skill-row-bar-fill { transition-delay: 0.5s; }
-.skill-block.is-visible .skill-row:nth-child(6) .skill-row-bar-fill { transition-delay: 0.6s; }
+@media (prefers-reduced-motion: reduce) {
+    .skill-row-bar-fill {
+        transition: none;
+    }
+}
 
 /* ============================
    Works Section

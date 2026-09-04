@@ -194,6 +194,49 @@ if (spyLinks.length) {
 }
 
 // ============================
+// Skill bars: fill each bar to its data-level when scrolled into view
+// ============================
+const skillBlocks = document.querySelectorAll('.skill-block');
+
+if (skillBlocks.length) {
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const fillSkillBars = (block) => {
+        block.querySelectorAll('.skill-row').forEach((row, i) => {
+            const fill = row.querySelector('.skill-row-bar-fill');
+            if (!fill) return;
+
+            const level = Math.min(100, Math.max(0, parseFloat(row.dataset.level) || 0));
+
+            if (reduceMotion) {
+                fill.style.width = `${level}%`;
+                return;
+            }
+
+            // Stagger each row within the block, then let the CSS width
+            // transition play from 0 on the next frame.
+            fill.style.transitionDelay = `${i * 0.1}s`;
+            requestAnimationFrame(() => {
+                fill.style.width = `${level}%`;
+            });
+        });
+    };
+
+    const skillObserver = new IntersectionObserver(
+        (entries) => {
+            entries.forEach((entry) => {
+                if (!entry.isIntersecting) return;
+                fillSkillBars(entry.target);
+                skillObserver.unobserve(entry.target);
+            });
+        },
+        { threshold: 0.15, rootMargin: '0px 0px -40px 0px' }
+    );
+
+    skillBlocks.forEach((block) => skillObserver.observe(block));
+}
+
+// ============================
 // Development Experience Accordion
 // ============================
 const expItems = document.querySelectorAll('.exp-item');
