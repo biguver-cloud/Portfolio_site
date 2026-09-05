@@ -664,6 +664,16 @@ ul {
     font-weight: 400;
 }
 
+/* Count-up numbers: fixed-width digits so the surrounding text doesn't
+   reflow as the value animates */
+.count-up {
+    display: inline-block;
+    min-width: 1ch;
+    font-variant-numeric: tabular-nums;
+    color: var(--c-text);
+    font-weight: 600;
+}
+
 .timeline-link {
     display: inline-block;
     margin-top: 14px;

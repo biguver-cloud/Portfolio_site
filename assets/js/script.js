@@ -237,6 +237,56 @@ if (skillBlocks.length) {
 }
 
 // ============================
+// Count-up numbers (e.g. career stats) when scrolled into view
+// ============================
+const countTargets = document.querySelectorAll('.count-up');
+
+if (countTargets.length) {
+    const reduceMotionCount = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const runCountUp = (el) => {
+        const target = parseFloat(el.dataset.countTo);
+        if (!Number.isFinite(target)) return;
+
+        if (reduceMotionCount) {
+            el.textContent = target;
+            return;
+        }
+
+        const duration = 900; // ms
+        const start = performance.now();
+
+        const step = (now) => {
+            const progress = Math.min(1, (now - start) / duration);
+            // ease-out: quick start, gentle settle
+            const eased = 1 - Math.pow(1 - progress, 3);
+            el.textContent = Math.round(target * eased);
+
+            if (progress < 1) {
+                requestAnimationFrame(step);
+            } else {
+                el.textContent = target;
+            }
+        };
+
+        requestAnimationFrame(step);
+    };
+
+    const countObserver = new IntersectionObserver(
+        (entries) => {
+            entries.forEach((entry) => {
+                if (!entry.isIntersecting) return;
+                runCountUp(entry.target);
+                countObserver.unobserve(entry.target);
+            });
+        },
+        { threshold: 0.6 }
+    );
+
+    countTargets.forEach((el) => countObserver.observe(el));
+}
+
+// ============================
 // Development Experience Accordion
 // ============================
 const expItems = document.querySelectorAll('.exp-item');
