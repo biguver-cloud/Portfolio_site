@@ -283,7 +283,13 @@ if (countTargets.length) {
         { threshold: 0.6 }
     );
 
-    countTargets.forEach((el) => countObserver.observe(el));
+    countTargets.forEach((el) => {
+        // Reserve the final digit width up front so the surrounding text
+        // doesn't shift when the value grows (e.g. 9 -> 10 -> 31).
+        const digits = String(parseFloat(el.dataset.countTo) || 0).length;
+        el.style.minWidth = `${digits}ch`;
+        countObserver.observe(el);
+    });
 }
 
 // ============================
