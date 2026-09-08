@@ -364,3 +364,99 @@ if (heroBg) {
         { passive: true }
     );
 }
+
+// ============================
+// Hobby gallery lightbox
+// ============================
+const hobbyTriggers = Array.from(document.querySelectorAll('.hobby-item'));
+
+if (hobbyTriggers.length) {
+    const slides = hobbyTriggers.map((btn) => {
+        const img = btn.querySelector('img');
+        return { src: img ? img.src : '', alt: img ? img.alt : '' };
+    });
+
+    let lastFocused = null;
+    let current = 0;
+
+    const overlay = document.createElement('div');
+    overlay.className = 'lightbox';
+    overlay.setAttribute('role', 'dialog');
+    overlay.setAttribute('aria-modal', 'true');
+    overlay.setAttribute('aria-label', '切り絵作品の拡大表示');
+    overlay.innerHTML =
+        '<button class="lightbox-close" type="button" aria-label="閉じる">&times;</button>' +
+        '<button class="lightbox-nav lightbox-prev" type="button" aria-label="前の作品">&#8249;</button>' +
+        '<figure class="lightbox-figure">' +
+        '<img class="lightbox-img" src="" alt="">' +
+        '<figcaption class="lightbox-caption"></figcaption>' +
+        '</figure>' +
+        '<button class="lightbox-nav lightbox-next" type="button" aria-label="次の作品">&#8250;</button>';
+    document.body.appendChild(overlay);
+
+    const imgEl = overlay.querySelector('.lightbox-img');
+    const captionEl = overlay.querySelector('.lightbox-caption');
+    const closeBtn = overlay.querySelector('.lightbox-close');
+    const prevBtn = overlay.querySelector('.lightbox-prev');
+    const nextBtn = overlay.querySelector('.lightbox-next');
+    const focusables = [closeBtn, prevBtn, nextBtn];
+
+    const render = () => {
+        const slide = slides[current];
+        imgEl.src = slide.src;
+        imgEl.alt = slide.alt;
+        captionEl.textContent = slide.alt;
+    };
+
+    const step = (dir) => {
+        current = (current + dir + slides.length) % slides.length;
+        render();
+    };
+
+    const onKeydown = (e) => {
+        if (e.key === 'Escape') {
+            close();
+        } else if (e.key === 'ArrowLeft') {
+            step(-1);
+        } else if (e.key === 'ArrowRight') {
+            step(1);
+        } else if (e.key === 'Tab') {
+            const first = focusables[0];
+            const last = focusables[focusables.length - 1];
+            if (e.shiftKey && document.activeElement === first) {
+                e.preventDefault();
+                last.focus();
+            } else if (!e.shiftKey && document.activeElement === last) {
+                e.preventDefault();
+                first.focus();
+            }
+        }
+    };
+
+    function open(index) {
+        current = index;
+        lastFocused = document.activeElement;
+        render();
+        overlay.classList.add('is-open');
+        document.body.style.overflow = 'hidden';
+        document.addEventListener('keydown', onKeydown);
+        closeBtn.focus();
+    }
+
+    function close() {
+        overlay.classList.remove('is-open');
+        document.body.style.overflow = '';
+        document.removeEventListener('keydown', onKeydown);
+        if (lastFocused) lastFocused.focus();
+    }
+
+    hobbyTriggers.forEach((btn, i) => {
+        btn.addEventListener('click', () => open(i));
+    });
+    closeBtn.addEventListener('click', close);
+    prevBtn.addEventListener('click', () => step(-1));
+    nextBtn.addEventListener('click', () => step(1));
+    overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) close();
+    });
+}
