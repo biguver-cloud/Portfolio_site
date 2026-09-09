@@ -1,30 +1,23 @@
 // ============================================================
-// portfolio-site : 画面の動き（インタラクション）をまとめたファイル
-// ------------------------------------------------------------
-//  1. ヘッダー            : スクロールすると背景・影を付ける
-//  2. モバイルメニュー     : ハンバーガーボタンで開閉
-//  3. フェードイン         : スクロールで各要素をふわっと表示
-//  4. スムーススクロール   : ナビのページ内リンクを滑らかに移動
-//  5. スクロールスパイ     : 今見ているセクションをナビでハイライト
-//  6. スキルバー           : Skills の棒グラフを伸ばすアニメ
-//  7. カウントアップ       : 数字を 0 から目標値まで数える
-//  8. 経歴アコーディオン   : 受託開発実績の詳細を開閉
-//  9. パララックス         : ヒーロー背景を少しずらして奥行きを出す
-// 10. ライトボックス       : 趣味ギャラリーの画像を拡大表示
-// 11. Works フィルタ       : 作品カードを技術タグで絞り込み
+// このファイル = ページの「動き」をまとめたもの
+// （ボタンを押す・スクロールする などに反応して画面を変える）
 //
-// 共通の考え方:
-//  - 「スクロールで画面に入ったか」の判定は IntersectionObserver を使う
-//  - 見た目のアニメは基本 CSS 側。JS はクラスや style を付け外しするだけ
-//  - prefers-reduced-motion（動きを減らす OS 設定）に配慮する
+//  1. スクロールでヘッダーの見た目を変える
+//  2. スマホのメニューを開け閉めする
+//  3. スクロールで文字や画像をじわっと表示する
+//  4. メニューのリンクで、その場所へなめらかに移動する
+//  5. いま読んでいる場所を上のメニューで示す
+//  6. スキルの棒グラフを伸ばして見せる
+//  7. 数字を 0 から目標の数まで数え上げる
+//  8. 「受託開発実績」の各項目を開け閉めする
+//  9. トップの背景画像をスクロールに合わせて少し動かす
+// 10. 趣味ギャラリーの画像を大きく表示する
+// 11. Works の作品を、使った技術で絞り込む
 // ============================================================
 
 
 // ============================
-// 1. ヘッダー : スクロールで見た目を切り替え
-// ----------------------------
-// 少し下にスクロールしたら <header> に "scrolled" クラスを付ける。
-// （背景・影・高さの変化は CSS 側）
+// 1. 少し下にスクロールしたら、ヘッダーの見た目を変える
 // ============================
 const header = document.getElementById('header');
 
@@ -37,19 +30,17 @@ const onScroll = () => {
 };
 
 window.addEventListener('scroll', onScroll, { passive: true });
-onScroll(); // 読み込み時点のスクロール位置も反映しておく
+onScroll();
 
 // ============================
-// 2. モバイルメニュー : ハンバーガーボタンで開閉
-// ----------------------------
-// ボタンで nav を開閉。開いている間は背面(body)のスクロールを固定。
+// 2. スマホのメニューを、ボタンで開け閉めする
 // ============================
 const navToggle = document.getElementById('navToggle');
 const nav = document.getElementById('nav');
 
 navToggle.addEventListener('click', () => {
-    navToggle.classList.toggle('active'); // ボタンを×印に変形（CSS）
-    nav.classList.toggle('open');         // メニューをスライド表示（CSS）
+    navToggle.classList.toggle('active');
+    nav.classList.toggle('open');
     document.body.style.overflow = nav.classList.contains('open') ? 'hidden' : '';
 });
 
@@ -63,10 +54,8 @@ document.querySelectorAll('.nav-list a').forEach((link) => {
 });
 
 // ============================
-// 3. フェードイン : スクロールで要素をふわっと表示
-// ----------------------------
-// class="fade-in" / "fade-in-up" の要素が画面に入ったら "is-visible" を付ける
-// （フェード＆スライドは CSS 側）。一度表示したら監視をやめる。
+// 3. スクロールでその部分が画面に入ったら、文字や画像をじわっと表示する
+// （見た目の変化は CSS 側。一度出したらそれっきり）
 // ============================
 const fadeTargets = document.querySelectorAll('.fade-in, .fade-in-up');
 
@@ -75,19 +64,19 @@ const io = new IntersectionObserver(
         entries.forEach((entry) => {
             if (entry.isIntersecting) {
                 entry.target.classList.add('is-visible');
-                io.unobserve(entry.target); // 表示済みは監視解除
+                io.unobserve(entry.target);
             }
         });
     },
     {
-        threshold: 0.14,                 // 14% 見えたら発火
-        rootMargin: '0px 0px -60px 0px', // 画面下端の少し手前で発火
+        threshold: 0.14,
+        rootMargin: '0px 0px -60px 0px',
     }
 );
 
 fadeTargets.forEach((el) => io.observe(el));
 
-// ヒーロー内の要素は、スクロールを待たずページ読み込み時に表示する
+// トップ画面の中身は、スクロールを待たず最初から表示する
 window.addEventListener('load', () => {
     document.querySelectorAll('.hero .fade-in').forEach((el) => {
         el.classList.add('is-visible');
@@ -95,15 +84,13 @@ window.addEventListener('load', () => {
 });
 
 // ============================
-// 4. スムーススクロール : ページ内リンクを滑らかに移動
-// ----------------------------
-// href="#..." のリンククリックで対象セクションへスクロール。
-// 固定ヘッダーに隠れないよう、ヘッダーの高さぶん上にずらす。
+// 4. メニューのリンクを押したら、その場所までなめらかに移動する
+// （固定ヘッダーに隠れないよう、ヘッダーの高さぶん上で止める）
 // ============================
 document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
     anchor.addEventListener('click', (e) => {
         const targetId = anchor.getAttribute('href');
-        if (targetId.length <= 1) return; // href="#" だけのものは無視
+        if (targetId.length <= 1) return;
 
         const target = document.querySelector(targetId);
         if (!target) return;
@@ -122,14 +109,7 @@ document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
 });
 
 // ============================
-// 5. スクロールスパイ : 今見ているセクションをナビでハイライト
-// ----------------------------
-// 各セクションを監視し、画面上部あたりを横切っているセクションの
-// ナビリンクに "is-active" / aria-current を付ける。
-//  - 複数該当時はページ上側のセクションを優先
-//  - 最下部までスクロールしたら最後のリンクを強制的に選択
-//  - ナビをクリックした直後は、スムーススクロールが終わるまで
-//    ハイライトを固定して途中のちらつきを防ぐ（spyLock）
+// 5. いま読んでいる場所を、上のメニューで示す（下線が動く）
 // ============================
 const spyLinks = Array.from(document.querySelectorAll('.nav-list a[href^="#"]'));
 
@@ -138,11 +118,11 @@ if (spyLinks.length) {
         .map((link) => document.getElementById(link.getAttribute('href').slice(1)))
         .filter(Boolean);
 
-    const inView = new Set();   // いま判定バンドに入っているセクション id の集合
-    let spyLock = false;        // クリックスクロール中は true（監視結果で上書きしない）
+    const inView = new Set();
+    let spyLock = false;
     let spyLockTimer = null;
 
-    // 指定 id のリンクだけを active にする
+    // 指定した場所のメニュー項目だけに印を付ける
     const setActiveLink = (id) => {
         spyLinks.forEach((link) => {
             const isActive = link.getAttribute('href') === `#${id}`;
@@ -155,10 +135,9 @@ if (spyLinks.length) {
         });
     };
 
-    // いま見えているセクションから active を決める
+    // いま画面に見えている場所から、印を付ける項目を決める
     const updateFromView = () => {
         if (spyLock) return;
-        // ドキュメント順で最初に見えているもの＝一番上のセクション
         const active = spySections.find((section) => inView.has(section.id));
         setActiveLink(active ? active.id : null);
     };
@@ -175,8 +154,7 @@ if (spyLinks.length) {
             updateFromView();
         },
         {
-            // 画面の上寄りだけを判定バンドにする（上40%・下55%を除外＝残り約5%）。
-            // セクションの上端が画面の約40%まで来たタイミングで切り替わる。
+            // 画面の上のほうだけを「今ここ」の判定対象にする
             rootMargin: '-40% 0px -55% 0px',
             threshold: 0,
         }
@@ -184,8 +162,7 @@ if (spyLinks.length) {
 
     spySections.forEach((section) => spyObserver.observe(section));
 
-    // 最後のセクションが短いと判定バンドに届かないことがあるので、
-    // ページ最下部まで来たら最後のリンクを active にする保険。
+    // 一番下まで来たら、最後の項目に印を付ける
     let bottomTicking = false;
     const checkBottom = () => {
         if (spyLock || !spySections.length) return;
@@ -210,8 +187,7 @@ if (spyLinks.length) {
         { passive: true }
     );
 
-    // ナビのクリック時: 目的地を即 active にし、スクロールが落ち着くまでロック。
-    // scrollend イベント、無ければ 700ms のタイマーでロック解除する。
+    // メニューから飛んでいる最中は、途中で下線がチラつかないよう固定する
     const releaseSpyLock = () => {
         spyLock = false;
         if (spyLockTimer) {
@@ -235,16 +211,13 @@ if (spyLinks.length) {
 }
 
 // ============================
-// 6. スキルバー : Skills の棒グラフを data-level まで伸ばす
-// ----------------------------
-// カテゴリ(.skill-block)が画面に入ったら、その中の各行の
-// data-level(0〜100) を棒(.skill-row-bar-fill)の width に反映。
-// 行ごとに 0.1 秒ずつ遅らせて順番に伸ばす。一度きり。
-//  - prefers-reduced-motion 時はアニメなしで即最終幅
+// 6. スキル欄の棒グラフを、画面に入ったら伸ばして見せる
+// （伸ばす長さは、各行に書いた data-level の数値ぶん）
 // ============================
 const skillBlocks = document.querySelectorAll('.skill-block');
 
 if (skillBlocks.length) {
+    // 「動きを減らす」設定の人にはアニメーションを見せない
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     const fillSkillBars = (block) => {
@@ -252,7 +225,7 @@ if (skillBlocks.length) {
             const fill = row.querySelector('.skill-row-bar-fill');
             if (!fill) return;
 
-            // data-level を 0〜100 の範囲に丸める
+            // data-level を 0〜100 の範囲におさめる
             const level = Math.min(100, Math.max(0, parseFloat(row.dataset.level) || 0));
 
             if (reduceMotion) {
@@ -260,7 +233,7 @@ if (skillBlocks.length) {
                 return;
             }
 
-            // 行ごとにずらし、次フレームで width を変えて CSS transition を再生させる
+            // 行ごとに少しずつ遅らせて、順番に伸びるようにする
             fill.style.transitionDelay = `${i * 0.1}s`;
             requestAnimationFrame(() => {
                 fill.style.width = `${level}%`;
@@ -283,12 +256,8 @@ if (skillBlocks.length) {
 }
 
 // ============================
-// 7. カウントアップ : 数字を 0 から目標値まで数える
-// ----------------------------
-// class="count-up" data-count-to="31" の要素が画面に入ったら
-// 0 → 31 を約 0.9 秒でアニメーション表示（ease-out）。一度きり。
-//  - prefers-reduced-motion 時は即最終値
-//  - 桁数ぶんの幅を先に確保して、周りの文がずれないようにする
+// 7. 数字を 0 から目標の数まで数え上げて表示する
+// （目標の数は data-count-to に書いてある。画面に入ったら1回だけ動く）
 // ============================
 const countTargets = document.querySelectorAll('.count-up');
 
@@ -304,19 +273,19 @@ if (countTargets.length) {
             return;
         }
 
-        const duration = 900; // ミリ秒
+        const duration = 900; // 何ミリ秒かけて数えるか
         const start = performance.now();
 
         const step = (now) => {
             const progress = Math.min(1, (now - start) / duration);
-            // ease-out: 最初は速く、最後はゆっくり止まる
+            // 最初は速く、終わりに近づくほどゆっくりにする
             const eased = 1 - Math.pow(1 - progress, 3);
             el.textContent = Math.round(target * eased);
 
             if (progress < 1) {
                 requestAnimationFrame(step);
             } else {
-                el.textContent = target; // 最後は必ず正確な値に
+                el.textContent = target; // 最後は必ず正確な数にする
             }
         };
 
@@ -335,8 +304,7 @@ if (countTargets.length) {
     );
 
     countTargets.forEach((el) => {
-        // 最終桁数ぶんの幅を先に確保しておき、値が増えても（9→10→31）
-        // 周囲のテキストがずれないようにする。
+        // 桁が増えても前後の文がずれないよう、あらかじめ幅を取っておく
         const digits = String(parseFloat(el.dataset.countTo) || 0).length;
         el.style.minWidth = `${digits}ch`;
         countObserver.observe(el);
@@ -344,11 +312,8 @@ if (countTargets.length) {
 }
 
 // ============================
-// 8. 経歴アコーディオン : 受託開発実績の詳細を開閉
-// ----------------------------
-// 見出し(.exp-summary)クリックで本文(.exp-body)を開閉。
-// 高さ 0 ⇔ 中身の高さ(scrollHeight) を切り替えてスライドさせる。
-// 開ききったら max-height:none に戻し、画面幅が変わっても崩れないようにする。
+// 8. 「受託開発実績」の各項目を、見出しクリックで開け閉めする
+// （高さを 0 ⇔ 中身の高さ で切り替えてスライドさせる）
 // ============================
 const expItems = document.querySelectorAll('.exp-item');
 
@@ -362,20 +327,19 @@ expItems.forEach((item) => {
         const isOpen = item.classList.contains('open');
 
         if (isOpen) {
-            // 閉じる: いったん現在の高さを指定してから 0 へ（transition の開始値をつくる）
+            // 閉じる
             body.style.maxHeight = body.scrollHeight + 'px';
-            // 強制リフロー
-            void body.offsetHeight;
+            void body.offsetHeight; // いったんブラウザに高さを計算させる
             body.style.maxHeight = '0px';
             item.classList.remove('open');
             summary.setAttribute('aria-expanded', 'false');
         } else {
-            // 開く: 中身の高さまで広げる
+            // 開く
             body.style.maxHeight = body.scrollHeight + 'px';
             item.classList.add('open');
             summary.setAttribute('aria-expanded', 'true');
 
-            // 開ききったら固定値を外す（後で中身がリサイズされても対応できるように）
+            // 開ききったら高さの固定を外す（あとで中身が変わっても崩れない）
             body.addEventListener(
                 'transitionend',
                 function handler() {
@@ -390,7 +354,7 @@ expItems.forEach((item) => {
     });
 });
 
-// 画面リサイズ時、開いている項目の高さ固定を解除して崩れを防ぐ
+// 画面の幅が変わったら、開いている項目の高さ固定を外して崩れを防ぐ
 window.addEventListener('resize', () => {
     document.querySelectorAll('.exp-item.open .exp-body').forEach((body) => {
         body.style.maxHeight = 'none';
@@ -398,10 +362,7 @@ window.addEventListener('resize', () => {
 });
 
 // ============================
-// 9. パララックス : ヒーロー背景をゆっくりずらす
-// ----------------------------
-// スクロール量に応じて背景画像を少し下方向へ動かし、奥行きを出す。
-// scroll ごとに requestAnimationFrame でまとめて処理（負荷対策）。
+// 9. トップの大きな背景画像を、スクロールに合わせて少し動かす（奥行きを出す）
 // ============================
 const heroBg = document.querySelector('.hero-bg');
 if (heroBg) {
@@ -412,7 +373,7 @@ if (heroBg) {
             if (!ticking) {
                 window.requestAnimationFrame(() => {
                     const y = window.scrollY;
-                    if (y < window.innerHeight) { // ヒーローが見えている間だけ動かす
+                    if (y < window.innerHeight) { // トップ画面が見えている間だけ
                         heroBg.style.transform = `translateY(${y * 0.25}px) scale(1.05)`;
                     }
                     ticking = false;
@@ -425,29 +386,22 @@ if (heroBg) {
 }
 
 // ============================
-// 10. ライトボックス : 趣味ギャラリーの画像を拡大表示
-// ----------------------------
-// サムネイル(.hobby-item ボタン)クリックで、暗い全画面オーバーレイに
-// 拡大画像を表示する。オーバーレイは JS でこの場で組み立てる。
-//  - 閉じる            : ×ボタン / 背景クリック / Esc
-//  - 前後移動          : ◂ ▸ ボタン / ← → キー（端で循環）
-//  - フォーカストラップ : Tab が × ◂ ▸ の3ボタン内だけを回る
-//  - 閉じたら開く前の要素へフォーカスを戻す
-//  - 開いている間は背面スクロールを固定
+// 10. 趣味ギャラリーの画像を、クリックで大きく表示する
+// （閉じる: ×ボタン / 背景クリック / Esc　　前後の画像: ◂ ▸ ボタン / ← → キー）
 // ============================
 const hobbyTriggers = Array.from(document.querySelectorAll('.hobby-item'));
 
 if (hobbyTriggers.length) {
-    // 各サムネイルの画像URLと alt を配列にしておく
+    // 各サムネイルの画像アドレスと説明文をまとめておく
     const slides = hobbyTriggers.map((btn) => {
         const img = btn.querySelector('img');
         return { src: img ? img.src : '', alt: img ? img.alt : '' };
     });
 
-    let lastFocused = null; // 開く前にフォーカスがあった要素（閉じたら戻す）
-    let current = 0;        // いま表示中のスライド番号
+    let lastFocused = null; // 開く前に選ばれていた場所（閉じたら戻す）
+    let current = 0;        // いま表示している画像の番号
 
-    // --- オーバーレイの DOM を生成して body に追加 ---
+    // 拡大表示する黒い画面を組み立てて、ページに追加する
     const overlay = document.createElement('div');
     overlay.className = 'lightbox';
     overlay.setAttribute('role', 'dialog');
@@ -468,9 +422,9 @@ if (hobbyTriggers.length) {
     const closeBtn = overlay.querySelector('.lightbox-close');
     const prevBtn = overlay.querySelector('.lightbox-prev');
     const nextBtn = overlay.querySelector('.lightbox-next');
-    const focusables = [closeBtn, prevBtn, nextBtn]; // フォーカストラップの対象
+    const focusables = [closeBtn, prevBtn, nextBtn];
 
-    // いまのスライドを画面に反映する
+    // いまの番号の画像を画面に表示する
     const render = () => {
         const slide = slides[current];
         imgEl.src = slide.src;
@@ -478,7 +432,7 @@ if (hobbyTriggers.length) {
         captionEl.textContent = slide.alt;
     };
 
-    // 前後に移動（末尾→先頭、先頭→末尾で循環）
+    // 前後の画像へ（端まで行ったら反対側へ回る）
     const step = (dir) => {
         current = (current + dir + slides.length) % slides.length;
         render();
@@ -493,7 +447,7 @@ if (hobbyTriggers.length) {
         } else if (e.key === 'ArrowRight') {
             step(1);
         } else if (e.key === 'Tab') {
-            // フォーカスを × ◂ ▸ の3ボタン内で循環させる
+            // Tab の移動先を、× ◂ ▸ の3つのボタンの中だけに閉じ込める
             const first = focusables[0];
             const last = focusables[focusables.length - 1];
             if (e.shiftKey && document.activeElement === first) {
@@ -508,10 +462,10 @@ if (hobbyTriggers.length) {
 
     function open(index) {
         current = index;
-        lastFocused = document.activeElement; // 戻り先を覚えておく
+        lastFocused = document.activeElement;
         render();
         overlay.classList.add('is-open');
-        document.body.style.overflow = 'hidden'; // 背面スクロールを固定
+        document.body.style.overflow = 'hidden'; // 後ろのページはスクロールさせない
         document.addEventListener('keydown', onKeydown);
         closeBtn.focus();
     }
@@ -520,10 +474,9 @@ if (hobbyTriggers.length) {
         overlay.classList.remove('is-open');
         document.body.style.overflow = '';
         document.removeEventListener('keydown', onKeydown);
-        if (lastFocused) lastFocused.focus(); // フォーカスを元の要素へ
+        if (lastFocused) lastFocused.focus();
     }
 
-    // --- イベント登録 ---
     hobbyTriggers.forEach((btn, i) => {
         btn.addEventListener('click', () => open(i));
     });
@@ -531,18 +484,13 @@ if (hobbyTriggers.length) {
     prevBtn.addEventListener('click', () => step(-1));
     nextBtn.addEventListener('click', () => step(1));
     overlay.addEventListener('click', (e) => {
-        if (e.target === overlay) close(); // 画像の外側（背景）クリックで閉じる
+        if (e.target === overlay) close(); // 画像の外側（黒い部分）をクリックしたら閉じる
     });
 }
 
 // ============================
-// 11. Works フィルタ : 作品カードを技術タグで絞り込み
-// ----------------------------
-// タブ（All / Python / ...）をクリックまたは矢印キーで選ぶと、
-// data-tags に一致する .work-card だけ表示し、他は hidden にする。
-// 再表示されるカードは is-enter クラスで軽くフェードインさせる。
-//  - ARIA tabs パターン : role=tab / aria-selected / ロービング tabindex
-//  - ← → （↑ ↓）でタブ移動＋即フィルタ、Home / End で端へ
+// 11. Works の作品を、使った技術で絞り込んで表示する
+// （タブを選ぶと、その技術を使った作品だけ表示。ほかは隠す）
 // ============================
 const worksFilter = document.querySelector('.works-filter');
 const worksGrid = document.querySelector('.works-grid');
@@ -551,28 +499,28 @@ if (worksFilter && worksGrid) {
     const tabs = Array.from(worksFilter.querySelectorAll('.works-filter-tab'));
     const cards = Array.from(worksGrid.querySelectorAll('.work-card'));
 
-    // 指定タグでカードを絞り込む（'all' は全表示）
+    // 選ばれたタグに合う作品だけ表示する（'all' は全部表示）
     const applyFilter = (filter) => {
         cards.forEach((card) => {
             const tags = (card.dataset.tags || '').split(/\s+/);
             const match = filter === 'all' || tags.includes(filter);
             card.hidden = !match;
             if (match) {
-                // 再表示されるカードは入場アニメを再生し直す
+                // もう一度出てくる作品は、軽い表示アニメをやり直す
                 card.classList.remove('is-enter');
-                void card.offsetWidth; // 強制リフロー（アニメ再スタート用）
+                void card.offsetWidth;
                 card.classList.add('is-enter');
             }
         });
     };
 
-    // タブの選択状態を更新してから絞り込みを実行する
+    // 押されたタブを選択状態にして、絞り込みを実行する
     const selectTab = (tab) => {
         tabs.forEach((t) => {
             const active = t === tab;
             t.classList.toggle('is-active', active);
             t.setAttribute('aria-selected', active ? 'true' : 'false');
-            t.tabIndex = active ? 0 : -1; // 選択中のタブだけ Tab で入れる
+            t.tabIndex = active ? 0 : -1;
         });
         applyFilter(tab.dataset.filter);
     };
@@ -582,7 +530,7 @@ if (worksFilter && worksGrid) {
         if (tab) selectTab(tab);
     });
 
-    // 矢印キー / Home / End でタブ移動（移動先を即フィルタ）
+    // 矢印キーや Home / End でもタブを切り替えられるようにする
     worksFilter.addEventListener('keydown', (e) => {
         const idx = tabs.indexOf(document.activeElement);
         if (idx === -1) return;
