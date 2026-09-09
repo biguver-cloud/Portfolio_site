@@ -460,3 +460,64 @@ if (hobbyTriggers.length) {
         if (e.target === overlay) close();
     });
 }
+
+// ============================
+// Works filter (filter cards by tech tag)
+// ============================
+const worksFilter = document.querySelector('.works-filter');
+const worksGrid = document.querySelector('.works-grid');
+
+if (worksFilter && worksGrid) {
+    const tabs = Array.from(worksFilter.querySelectorAll('.works-filter-tab'));
+    const cards = Array.from(worksGrid.querySelectorAll('.work-card'));
+
+    const applyFilter = (filter) => {
+        cards.forEach((card) => {
+            const tags = (card.dataset.tags || '').split(/\s+/);
+            const match = filter === 'all' || tags.includes(filter);
+            card.hidden = !match;
+            if (match) {
+                // Replay the enter animation for cards that (re)appear.
+                card.classList.remove('is-enter');
+                void card.offsetWidth;
+                card.classList.add('is-enter');
+            }
+        });
+    };
+
+    const selectTab = (tab) => {
+        tabs.forEach((t) => {
+            const active = t === tab;
+            t.classList.toggle('is-active', active);
+            t.setAttribute('aria-selected', active ? 'true' : 'false');
+            t.tabIndex = active ? 0 : -1;
+        });
+        applyFilter(tab.dataset.filter);
+    };
+
+    worksFilter.addEventListener('click', (e) => {
+        const tab = e.target.closest('.works-filter-tab');
+        if (tab) selectTab(tab);
+    });
+
+    worksFilter.addEventListener('keydown', (e) => {
+        const idx = tabs.indexOf(document.activeElement);
+        if (idx === -1) return;
+
+        let next = -1;
+        if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+            next = (idx + 1) % tabs.length;
+        } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+            next = (idx - 1 + tabs.length) % tabs.length;
+        } else if (e.key === 'Home') {
+            next = 0;
+        } else if (e.key === 'End') {
+            next = tabs.length - 1;
+        }
+
+        if (next === -1) return;
+        e.preventDefault();
+        tabs[next].focus();
+        selectTab(tabs[next]);
+    });
+}

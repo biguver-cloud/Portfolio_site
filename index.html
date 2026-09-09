@@ -393,8 +393,16 @@
                 <h3 class="works-subhead-title">Portfolio</h3>
                 <p class="works-subhead-sub">個人開発・学習プロジェクト</p>
             </div>
+            <div class="works-filter fade-in-up" role="tablist" aria-label="作品を技術で絞り込み">
+                <button class="works-filter-tab is-active" type="button" role="tab" aria-selected="true" tabindex="0" data-filter="all">All</button>
+                <button class="works-filter-tab" type="button" role="tab" aria-selected="false" tabindex="-1" data-filter="python">Python</button>
+                <button class="works-filter-tab" type="button" role="tab" aria-selected="false" tabindex="-1" data-filter="langchain">LangChain</button>
+                <button class="works-filter-tab" type="button" role="tab" aria-selected="false" tabindex="-1" data-filter="streamlit">Streamlit</button>
+                <button class="works-filter-tab" type="button" role="tab" aria-selected="false" tabindex="-1" data-filter="chainlit">Chainlit</button>
+                <button class="works-filter-tab" type="button" role="tab" aria-selected="false" tabindex="-1" data-filter="docker">Docker</button>
+            </div>
             <div class="works-grid">
-                <article class="work-card fade-in-up">
+                <article class="work-card fade-in-up" data-tags="python langchain streamlit openai docker">
                     <div class="work-thumb work-thumb-contain">
                         <img src="assets/images/works/project-01.png" alt="社内問い合わせ対応AIエージェントのスクリーンショット">
                     </div>
@@ -414,7 +422,7 @@
                         </a>
                     </div>
                 </article>
-                <article class="work-card fade-in-up">
+                <article class="work-card fade-in-up" data-tags="python langchain chainlit openai docker">
                     <div class="work-thumb work-thumb-contain">
                         <img src="assets/images/works/project-02.png" alt="AIロールプレイ型トレーニングツール RoleUp のスクリーンショット">
                     </div>

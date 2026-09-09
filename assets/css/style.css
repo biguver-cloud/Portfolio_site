@@ -1089,6 +1089,84 @@ ul {
     color: var(--c-text-soft);
 }
 
+/* ----- Works Filter (tech tags) ----- */
+.works-subhead:first-of-type {
+    margin-bottom: 44px;
+}
+
+.works-filter {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 20px;
+    margin-bottom: 56px;
+}
+
+.works-filter-tab {
+    position: relative;
+    font-family: var(--font-en);
+    font-size: 0.78rem;
+    letter-spacing: 0.12em;
+    color: var(--c-text-mute);
+    background: none;
+    border: none;
+    padding: 6px 2px;
+    cursor: pointer;
+    transition: color 0.3s var(--ease);
+}
+
+.works-filter-tab::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 1px;
+    background-color: var(--c-accent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s var(--ease);
+}
+
+.works-filter-tab:hover,
+.works-filter-tab.is-active {
+    color: var(--c-text);
+}
+
+.works-filter-tab.is-active::after {
+    transform: scaleX(1);
+}
+
+.works-filter-tab:focus-visible {
+    outline: 2px solid var(--c-accent);
+    outline-offset: 3px;
+}
+
+/* .work-card sets display:flex, which would otherwise beat [hidden] */
+.work-card[hidden] {
+    display: none;
+}
+
+.work-card.is-enter {
+    animation: workCardIn 0.35s var(--ease) both;
+}
+
+@keyframes workCardIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .work-card.is-enter {
+        animation: none;
+    }
+}
+
 /* ----- Development Experience Accordion ----- */
 .exp-list {
     display: flex;
