@@ -13,6 +13,7 @@
 //  9. トップの背景画像をスクロールに合わせて少し動かす
 // 10. 趣味ギャラリーの画像を大きく表示する
 // 11. Works の作品を、使った技術で絞り込む
+// 12. ダーク / ライトのテーマを切り替える
 // ============================================================
 
 
@@ -550,5 +551,60 @@ if (worksFilter && worksGrid) {
         e.preventDefault();
         tabs[next].focus();
         selectTab(tabs[next]);
+    });
+}
+
+// ============================
+// 12. ダーク / ライトのテーマを切り替える（選んだテーマはブラウザに保存）
+// （最初のテーマ適用は <head> の先読みスクリプトが済ませている）
+// ============================
+const themeToggle = document.getElementById('themeToggle');
+
+if (themeToggle) {
+    const root = document.documentElement;
+    const darkMedia = window.matchMedia('(prefers-color-scheme: dark)');
+
+    const isDark = () => root.dataset.theme === 'dark';
+
+    // ボタンの状態表示（押されている = ダーク）を今のテーマに合わせる
+    const reflectButton = () => {
+        themeToggle.setAttribute('aria-pressed', isDark() ? 'true' : 'false');
+    };
+
+    const applyTheme = (theme) => {
+        const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (!reduceMotion) {
+            // 切り替えの一瞬だけ色をなめらかに変える
+            root.classList.add('theme-transition');
+            window.setTimeout(() => root.classList.remove('theme-transition'), 400);
+        }
+        root.dataset.theme = theme;
+        root.style.colorScheme = theme;
+        reflectButton();
+    };
+
+    reflectButton();
+
+    themeToggle.addEventListener('click', () => {
+        const next = isDark() ? 'light' : 'dark';
+        try {
+            localStorage.setItem('theme', next);
+        } catch (e) {
+            // 保存できなくても、その場の切り替えは効かせる
+        }
+        applyTheme(next);
+    });
+
+    // 自分でまだ選んでいない間は、OS の設定変更に追従する
+    darkMedia.addEventListener('change', (e) => {
+        let saved = null;
+        try {
+            saved = localStorage.getItem('theme');
+        } catch (err) {
+            saved = null;
+        }
+        if (saved !== 'dark' && saved !== 'light') {
+            applyTheme(e.matches ? 'dark' : 'light');
+        }
     });
 }
