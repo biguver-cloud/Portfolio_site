@@ -1399,7 +1399,9 @@ ul {
 }
 
 .exp-status-done {
-    color: var(--c-text-on-dark);
+    /* 文字色は背景色にして、テーマに応じて自動で反転させる
+       （ライト: 黒地に白文字 / ダーク: 白地に黒文字） */
+    color: var(--c-bg);
     background-color: var(--c-text);
     border: 1px solid var(--c-text);
 }
