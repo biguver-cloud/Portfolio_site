@@ -86,6 +86,19 @@
     }
 }
 
+/* ダークモードでは、白背景のスクショ・写真が明るく浮きすぎないよう少しだけ落ち着かせる */
+:root[data-theme="dark"] .exp-demo img,
+:root[data-theme="dark"] .work-thumb img,
+:root[data-theme="dark"] .hobby-item img,
+:root[data-theme="dark"] .lightbox-img {
+    filter: brightness(0.88) contrast(1.03);
+    transition: filter 0.3s var(--ease);
+}
+
+:root[data-theme="dark"] .hobby-item:hover img {
+    filter: none;
+}
+
 *,
 *::before,
 *::after {
