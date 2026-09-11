@@ -2173,6 +2173,64 @@ ul {
 }
 
 /* ============================
+   Back to Top
+============================= */
+.back-to-top {
+    position: fixed;
+    right: 28px;
+    bottom: 28px;
+    z-index: 90;
+    width: 46px;
+    height: 46px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: 50%;
+    background-color: var(--c-text);
+    color: var(--c-bg);
+    cursor: pointer;
+    box-shadow: var(--shadow-card);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(12px);
+    transition: opacity 0.3s var(--ease), transform 0.3s var(--ease),
+        visibility 0.3s var(--ease), background-color 0.3s var(--ease), color 0.3s var(--ease);
+}
+
+.back-to-top.is-visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.back-to-top:hover {
+    background-color: var(--c-accent);
+    color: var(--c-bg-dark);
+}
+
+.back-to-top:focus-visible {
+    outline: 2px solid var(--c-accent);
+    outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .back-to-top {
+        transition: opacity 0.3s var(--ease), visibility 0.3s var(--ease), background-color 0.3s var(--ease), color 0.3s var(--ease);
+        transform: none;
+    }
+}
+
+@media (max-width: 768px) {
+    .back-to-top {
+        right: 18px;
+        bottom: 18px;
+        width: 42px;
+        height: 42px;
+    }
+}
+
+/* ============================
    Fade-in Animations
 ============================= */
 .fade-in,
