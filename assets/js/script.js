@@ -14,6 +14,7 @@
 // 10. 趣味ギャラリーの画像を大きく表示する
 // 11. Works の作品を、使った技術で絞り込む
 // 12. ダーク / ライトのテーマを切り替える
+// 13. 一定量スクロールしたら「トップへ戻る」ボタンを出す
 // ============================================================
 
 
@@ -606,5 +607,40 @@ if (themeToggle) {
         if (saved !== 'dark' && saved !== 'light') {
             applyTheme(e.matches ? 'dark' : 'light');
         }
+    });
+}
+
+// ============================
+// 13. 一定量スクロールしたら「トップへ戻る」ボタンを出す
+// ============================
+const backToTop = document.getElementById('backToTop');
+
+if (backToTop) {
+    // ビューポート高さの1.5倍を超えてスクロールしたら表示する
+    const showThreshold = () => window.innerHeight * 1.5;
+
+    const updateVisibility = () => {
+        backToTop.classList.toggle('is-visible', window.scrollY > showThreshold());
+    };
+
+    let ticking = false;
+    window.addEventListener(
+        'scroll',
+        () => {
+            if (!ticking) {
+                window.requestAnimationFrame(() => {
+                    updateVisibility();
+                    ticking = false;
+                });
+                ticking = true;
+            }
+        },
+        { passive: true }
+    );
+    updateVisibility(); // 読み込み時点のスクロール位置も反映
+
+    backToTop.addEventListener('click', () => {
+        const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        window.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
     });
 }
