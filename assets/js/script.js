@@ -2,6 +2,7 @@
 // このファイル = ページの「動き」をまとめたもの
 // （ボタンを押す・スクロールする などに反応して画面を変える）
 //
+//  0. 「動きを減らす」設定（OS側の指定）を一箇所でまとめて判定する
 //  1. スクロールでヘッダーの見た目を変える
 //  2. スマホのメニューを開け閉めする
 //  3. スクロールで文字や画像をじわっと表示する
@@ -17,6 +18,14 @@
 // 13. 一定量スクロールしたら「トップへ戻る」ボタンを出す
 // ============================================================
 
+
+// ============================
+// 0. 「動きを減らす」設定を一箇所でまとめて判定する
+// （OS / ブラウザの「視差効果を減らす」設定。以前は各機能がそれぞれ
+//    window.matchMedia(...) を書いていたが、ここに集約する）
+// ============================
+const reduceMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+const prefersReducedMotion = () => reduceMotionQuery.matches;
 
 // ============================
 // 1. 少し下にスクロールしたら、ヘッダーの見た目を変える
@@ -76,7 +85,22 @@ const io = new IntersectionObserver(
     }
 );
 
-fadeTargets.forEach((el) => io.observe(el));
+// 「動きを減らす」設定なら、スクロールを待たず最初から全部表示する
+const showAllFadeTargetsInstantly = () => {
+    io.disconnect();
+    fadeTargets.forEach((el) => el.classList.add('is-visible'));
+};
+
+if (prefersReducedMotion()) {
+    showAllFadeTargetsInstantly();
+} else {
+    fadeTargets.forEach((el) => io.observe(el));
+}
+
+// ページを開いたあとで設定が変わった場合も追従する
+reduceMotionQuery.addEventListener('change', (e) => {
+    if (e.matches) showAllFadeTargetsInstantly();
+});
 
 // トップ画面の中身は、スクロールを待たず最初から表示する
 window.addEventListener('load', () => {
@@ -105,7 +129,7 @@ document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
 
         window.scrollTo({
             top: targetPosition,
-            behavior: 'smooth',
+            behavior: prefersReducedMotion() ? 'auto' : 'smooth',
         });
     });
 });
@@ -220,7 +244,7 @@ const skillBlocks = document.querySelectorAll('.skill-block');
 
 if (skillBlocks.length) {
     // 「動きを減らす」設定の人にはアニメーションを見せない
-    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const reduceMotion = prefersReducedMotion();
 
     const fillSkillBars = (block) => {
         block.querySelectorAll('.skill-row').forEach((row, i) => {
@@ -264,7 +288,7 @@ if (skillBlocks.length) {
 const countTargets = document.querySelectorAll('.count-up');
 
 if (countTargets.length) {
-    const reduceMotionCount = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const reduceMotionCount = prefersReducedMotion();
 
     const runCountUp = (el) => {
         const target = parseFloat(el.dataset.countTo);
@@ -372,6 +396,10 @@ if (heroBg) {
     window.addEventListener(
         'scroll',
         () => {
+            // 「動きを減らす」設定なら、視差効果はかけない（毎回チェックするので
+            // ページを開いたあとの設定変更にもその場で追従する）
+            if (prefersReducedMotion()) return;
+
             if (!ticking) {
                 window.requestAnimationFrame(() => {
                     const y = window.scrollY;
@@ -573,8 +601,7 @@ if (themeToggle) {
     };
 
     const applyTheme = (theme) => {
-        const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        if (!reduceMotion) {
+        if (!prefersReducedMotion()) {
             // 切り替えの一瞬だけ色をなめらかに変える
             root.classList.add('theme-transition');
             window.setTimeout(() => root.classList.remove('theme-transition'), 400);
@@ -640,7 +667,6 @@ if (backToTop) {
     updateVisibility(); // 読み込み時点のスクロール位置も反映
 
     backToTop.addEventListener('click', () => {
-        const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        window.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
+        window.scrollTo({ top: 0, behavior: prefersReducedMotion() ? 'auto' : 'smooth' });
     });
 }
