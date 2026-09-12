@@ -2253,6 +2253,13 @@ ul {
 .hero .fade-in:nth-child(3) { transition-delay: 0.5s; }
 .hero-scroll.fade-in { transition-delay: 1.2s; }
 
+@media (prefers-reduced-motion: reduce) {
+    .fade-in,
+    .fade-in-up {
+        transition: none;
+    }
+}
+
 .skills-grid .skill-block:nth-child(2) { transition-delay: 0.1s; }
 .skills-grid .skill-block:nth-child(3) { transition-delay: 0.2s; }
 .skills-grid .skill-block:nth-child(4) { transition-delay: 0.3s; }
