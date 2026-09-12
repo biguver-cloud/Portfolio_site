@@ -416,18 +416,13 @@ if (heroBg) {
 }
 
 // ============================
-// 10. 趣味ギャラリーの画像を、クリックで大きく表示する
+// 10. 画像をクリックで大きく表示する（ライトボックス）
+// 趣味ギャラリーと Works の実績画像を、それぞれ独立した一組として扱う
 // （閉じる: ×ボタン / 背景クリック / Esc　　前後の画像: ◂ ▸ ボタン / ← → キー）
 // ============================
-const hobbyTriggers = Array.from(document.querySelectorAll('.hobby-item'));
 
-if (hobbyTriggers.length) {
-    // 各サムネイルの画像アドレスと説明文をまとめておく
-    const slides = hobbyTriggers.map((btn) => {
-        const img = btn.querySelector('img');
-        return { src: img ? img.src : '', alt: img ? img.alt : '' };
-    });
-
+// 1組ぶんのライトボックス（オーバーレイと開閉・前後移動）を組み立てる
+const createLightbox = (slides, ariaLabel) => {
     let lastFocused = null; // 開く前に選ばれていた場所（閉じたら戻す）
     let current = 0;        // いま表示している画像の番号
 
@@ -436,15 +431,15 @@ if (hobbyTriggers.length) {
     overlay.className = 'lightbox';
     overlay.setAttribute('role', 'dialog');
     overlay.setAttribute('aria-modal', 'true');
-    overlay.setAttribute('aria-label', '切り絵作品の拡大表示');
+    overlay.setAttribute('aria-label', ariaLabel);
     overlay.innerHTML =
         '<button class="lightbox-close" type="button" aria-label="閉じる">&times;</button>' +
-        '<button class="lightbox-nav lightbox-prev" type="button" aria-label="前の作品">&#8249;</button>' +
+        '<button class="lightbox-nav lightbox-prev" type="button" aria-label="前の画像">&#8249;</button>' +
         '<figure class="lightbox-figure">' +
         '<img class="lightbox-img" src="" alt="">' +
         '<figcaption class="lightbox-caption"></figcaption>' +
         '</figure>' +
-        '<button class="lightbox-nav lightbox-next" type="button" aria-label="次の作品">&#8250;</button>';
+        '<button class="lightbox-nav lightbox-next" type="button" aria-label="次の画像">&#8250;</button>';
     document.body.appendChild(overlay);
 
     const imgEl = overlay.querySelector('.lightbox-img');
@@ -507,15 +502,59 @@ if (hobbyTriggers.length) {
         if (lastFocused) lastFocused.focus();
     }
 
-    hobbyTriggers.forEach((btn, i) => {
-        btn.addEventListener('click', () => open(i));
-    });
     closeBtn.addEventListener('click', close);
     prevBtn.addEventListener('click', () => step(-1));
     nextBtn.addEventListener('click', () => step(1));
     overlay.addEventListener('click', (e) => {
         if (e.target === overlay) close(); // 画像の外側（黒い部分）をクリックしたら閉じる
     });
+
+    return { open };
+};
+
+// トリガー要素（クリック元）をライトボックスに結びつける
+// ボタンはクリックだけで十分だが、素の <img> はキーボードで
+// 開けるよう tabindex / role / Enter・Space を追加で付与する
+const wireLightboxTriggers = (triggers, lightbox) => {
+    triggers.forEach((el, i) => {
+        el.addEventListener('click', () => lightbox.open(i));
+
+        if (el.tagName === 'IMG') {
+            el.classList.add('lightbox-trigger');
+            el.tabIndex = 0;
+            el.setAttribute('role', 'button');
+            el.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    lightbox.open(i);
+                }
+            });
+        }
+    });
+};
+
+// 趣味ギャラリー（切り絵作品）
+const hobbyTriggers = Array.from(document.querySelectorAll('.hobby-item'));
+
+if (hobbyTriggers.length) {
+    const hobbySlides = hobbyTriggers.map((btn) => {
+        const img = btn.querySelector('img');
+        return { src: img ? img.src : '', alt: img ? img.alt : '' };
+    });
+    const hobbyLightbox = createLightbox(hobbySlides, '切り絵作品の拡大表示');
+    wireLightboxTriggers(hobbyTriggers, hobbyLightbox);
+}
+
+// Works の実績画像（Portfolio カードの2枚 + Development Experience の2枚。
+// デモ動画は独自の再生 UI を持つため対象外）
+const worksTriggers = Array.from(
+    document.querySelectorAll('.work-thumb img, .exp-demo-row img')
+);
+
+if (worksTriggers.length) {
+    const worksSlides = worksTriggers.map((img) => ({ src: img.src, alt: img.alt }));
+    const worksLightbox = createLightbox(worksSlides, 'Works作品の拡大表示');
+    wireLightboxTriggers(worksTriggers, worksLightbox);
 }
 
 // ============================
