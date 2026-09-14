@@ -426,8 +426,7 @@ ul {
     width: 100%;
     overflow: hidden;
     display: flex;
-    align-items: center;
-    justify-content: center;
+    flex-direction: column;
     padding: 120px 40px;
     background-color: var(--c-bg-dark);
 }
@@ -460,7 +459,14 @@ ul {
 .hero-inner {
     position: relative;
     z-index: 2;
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
     max-width: 1200px;
+    margin: 0 auto;
     text-align: center;
     padding: 0 16px;
 }
@@ -492,29 +498,24 @@ ul {
     padding-left: 0.55em;
 }
 
-/* PC only: title centered, SCROLL pinned to bottom, no overlap on short screens */
 @media (min-width: 769px) {
     .hero {
         min-height: 100svh;
-        padding-bottom: 120px;
-    }
-
-    /* keep SCROLL absolutely anchored near the bottom (base style), nudge up a bit */
-    .hero-scroll {
-        bottom: 40px;
     }
 }
 
+/* SCROLL 表示はタイトルの後ろに普通に並ぶ要素にする（絶対配置にしない）。
+   こうすることで、画面の高さに関係なくタイトルと重なることがなくなる。 */
 .hero-scroll {
-    position: absolute;
-    bottom: 50px;
-    left: 50%;
-    transform: translateX(-50%);
+    position: relative;
+    z-index: 2;
+    flex: 0 0 auto;
+    width: 100%;
+    margin-top: 32px;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 16px;
-    z-index: 2;
 }
 
 .hero-scroll span {
@@ -1692,16 +1693,6 @@ ul {
         font-size: clamp(1.9rem, 9vw, 4rem);
     }
 
-    /* Hero SCROLL: center reliably (transform is overridden by .fade-in,
-       so center via full-width box + align-items instead of translateX) */
-    .hero-scroll {
-        left: 0;
-        right: 0;
-        transform: none;
-        text-align: center;
-        align-items: center;
-    }
-
     /* Hero JP subtitle: shrink size & tracking so it fits on one line */
     .hero-title-jp {
         font-size: 0.75rem;
@@ -2440,8 +2431,7 @@ ul {
     }
 
     .hero-scroll {
-        display: flex;
-        bottom: 28px;
+        margin-top: 20px;
     }
 
     .hero-scroll span {
@@ -2570,30 +2560,3 @@ ul {
     }
 }
 
-/* ============================
-   Hero: low-height viewports
-============================= */
-/* .hero-title-en は横幅(vw)基準でサイズが決まるため、「横に広いのに高さだけ
-   低い」ウィンドウ（PCでウィンドウを縮めた場合など）では文字が縮まらず、
-   中央寄せされたタイトルの下端が伸びて SCROLL 表示と重なってしまう。
-   min-width を付けて対象を「横幅は十分ある・高さだけ低い」画面に絞り、
-   縦長のスマホ（幅が狭い画面）向けの既存調整には影響させない。
-   ファイル末尾に置くことで、幅基準のメディアクエリ（max-width: 768px 等の
-   .hero-scroll { display: flex } ）より後勝ちさせる。 */
-@media (max-height: 700px) and (min-width: 560px) {
-    .hero {
-        padding: 70px 40px;
-    }
-
-    .hero-title {
-        gap: 16px;
-    }
-
-    .hero-title-en {
-        font-size: clamp(2.4rem, 7vw, 4.5rem);
-    }
-
-    .hero-scroll {
-        display: none;
-    }
-}
