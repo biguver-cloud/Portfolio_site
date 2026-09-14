@@ -2569,3 +2569,20 @@ ul {
         margin: 12px 0 32px;
     }
 }
+
+/* ============================
+   Hero: low-height viewports
+============================= */
+/* 画面の高さが低い場合（スマホの横向きなど）は、中央寄せされたタイトルの
+   下端が伸びて SCROLL 表示と重なるため、SCROLL 側を隠して回避する。
+   ファイル末尾に置くことで、幅基準のメディアクエリ（max-width: 768px 等の
+   .hero-scroll { display: flex } ）より後勝ちさせ、スマホ横向きでも効かせる。 */
+@media (max-height: 480px) {
+    .hero-scroll {
+        display: none;
+    }
+
+    .hero-title {
+        gap: 20px;
+    }
+}
