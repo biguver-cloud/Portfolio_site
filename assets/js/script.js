@@ -366,11 +366,13 @@ if (skillBlocks.length) {
                 return;
             }
 
-            // 行ごとに少しずつ遅らせて、順番に伸びるようにする
+            // 行ごとに少しずつ遅らせて、順番に伸びるようにする。
+            // 遅延の指定と幅の変更が同じ描画更新にまとめられてしまわないよう、
+            // 間に強制リフローを挟んで確実に別のタイミングにする
+            // （経歴アコーディオンの開閉と同じ手法）
             fill.style.transitionDelay = `${i * 0.1}s`;
-            requestAnimationFrame(() => {
-                fill.style.width = `${level}%`;
-            });
+            void fill.offsetWidth;
+            fill.style.width = `${level}%`;
         });
     };
 
