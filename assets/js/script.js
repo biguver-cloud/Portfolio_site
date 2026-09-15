@@ -3,19 +3,20 @@
 // （ボタンを押す・スクロールする などに反応して画面を変える）
 //
 //  0. 「動きを減らす」設定（OS側の指定）を一箇所でまとめて判定する
-//  1. スクロールでヘッダーの見た目を変える
-//  2. スマホのメニューを開け閉めする
-//  3. スクロールで文字や画像をじわっと表示する
-//  4. メニューのリンクで、その場所へなめらかに移動する
-//  5. いま読んでいる場所を上のメニューで示す
-//  6. スキルの棒グラフを伸ばして見せる
-//  7. 数字を 0 から目標の数まで数え上げる
-//  8. 「受託開発実績」の各項目を開け閉めする
-//  9. トップの背景画像をスクロールに合わせて少し動かす
-// 10. 趣味ギャラリーの画像を大きく表示する
-// 11. Works の作品を、使った技術で絞り込む
-// 12. ダーク / ライトのテーマを切り替える
-// 13. 一定量スクロールしたら「トップへ戻る」ボタンを出す
+//  1. Skills の中身を一覧表（データ）から自動で組み立てる
+//  2. スクロールでヘッダーの見た目を変える
+//  3. スマホのメニューを開け閉めする
+//  4. スクロールで文字や画像をじわっと表示する
+//  5. メニューのリンクで、その場所へなめらかに移動する
+//  6. いま読んでいる場所を上のメニューで示す
+//  7. スキルの棒グラフを伸ばして見せる
+//  8. 数字を 0 から目標の数まで数え上げる
+//  9. 「受託開発実績」の各項目を開け閉めする
+// 10. トップの背景画像をスクロールに合わせて少し動かす
+// 11. 趣味ギャラリーの画像を大きく表示する
+// 12. Works の作品を、使った技術で絞り込む
+// 13. ダーク / ライトのテーマを切り替える
+// 14. 一定量スクロールしたら「トップへ戻る」ボタンを出す
 // ============================================================
 
 
@@ -28,7 +29,113 @@ const reduceMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
 const prefersReducedMotion = () => reduceMotionQuery.matches;
 
 // ============================
-// 1. 少し下にスクロールしたら、ヘッダーの見た目を変える
+// 1. Skills の中身を一覧表（データ）から自動で組み立てる
+// （あとの処理が .skill-block / .fade-in-up を数え上げるため、
+//   このスクリプトの中で一番最初に実行する必要がある）
+// ============================
+const skillsGrid = document.getElementById('skillsGrid');
+
+if (skillsGrid) {
+    const PRACTICAL_LEVEL = 80; // 「実務レベル」の棒グラフの長さ(%)
+    const LEARNING_LEVEL = 50;  // 「調べながら」の棒グラフの長さ(%)
+
+    // カテゴリごとのスキル一覧表。増やしたいときはここに1行足すだけでよい
+    const skillCategories = [
+        {
+            num: '01',
+            nameJa: 'AI活用ツール',
+            nameEn: 'AI Tools',
+            rows: [
+                { name: 'ChatGPT', period: '使用歴 2年', practical: true },
+                { name: 'Gemini', period: '使用歴 2年', practical: true },
+                { name: 'Claude Code', period: '使用歴 1年', practical: true },
+            ],
+        },
+        {
+            num: '02',
+            nameJa: '言語',
+            nameEn: 'Languages',
+            rows: [
+                { name: 'Python', period: '使用歴 10ヶ月', practical: true },
+                { name: 'JavaScript', period: '使用歴 7ヶ月', practical: false },
+                { name: 'HTML / CSS', period: '使用歴 7ヶ月', practical: false },
+            ],
+        },
+        {
+            num: '03',
+            nameJa: 'ライブラリ',
+            nameEn: 'Libraries',
+            rows: [
+                { name: 'FastAPI', period: '使用歴 8ヶ月', practical: false },
+                { name: 'LangChain', period: '使用歴 10ヶ月', practical: true },
+                { name: 'Streamlit', period: '使用歴 10ヶ月', practical: true },
+                { name: 'Chainlit', period: '使用歴 3ヶ月', practical: false },
+            ],
+        },
+        {
+            num: '04',
+            nameJa: 'DB',
+            nameEn: 'Database',
+            rows: [{ name: 'ChromaDB', period: '使用歴 7ヶ月', practical: false }],
+        },
+        {
+            num: '05',
+            nameJa: 'OS',
+            nameEn: 'Operating System',
+            rows: [
+                { name: 'macOS', period: '使用歴 8年以上', practical: true },
+                { name: 'Windows', period: '使用歴 8年以上', practical: true },
+            ],
+        },
+        {
+            num: '06',
+            nameJa: 'その他',
+            nameEn: 'Others',
+            rows: [
+                { name: 'OpenAI API', period: '使用歴 10ヶ月', practical: true },
+                { name: 'Gemini API', period: '使用歴 7ヶ月', practical: false },
+                { name: 'Google Cloud', period: '使用歴 10ヶ月', practical: false },
+                { name: 'Docker', period: '使用歴 10ヶ月', practical: false },
+                { name: 'GitHub Copilot', period: '使用歴 10ヶ月', practical: true },
+                { name: 'GitHub', period: '使用歴 10ヶ月', practical: true },
+            ],
+        },
+    ];
+
+    // 1行ぶんの .skill-row を組み立てる
+    const renderSkillRow = (row) => {
+        const levelClass = row.practical ? 'skill-row-practical' : 'skill-row-learning';
+        const levelValue = row.practical ? PRACTICAL_LEVEL : LEARNING_LEVEL;
+        const levelLabel = row.practical ? '実務レベル' : '調べながら';
+
+        return `
+            <div class="skill-row ${levelClass}" data-level="${levelValue}">
+                <span class="skill-row-name">${row.name}</span>
+                <span class="skill-row-period">${row.period}</span>
+                <span class="skill-row-level">${levelLabel}</span>
+                <div class="skill-row-bar"><span class="skill-row-bar-fill"></span></div>
+            </div>
+        `;
+    };
+
+    // 1カテゴリぶんの .skill-block を組み立てる
+    const renderSkillBlock = (category) => `
+        <div class="skill-block fade-in-up">
+            <h3 class="skill-cat">
+                <span class="skill-cat-num">${category.num}</span>${category.nameJa}
+                <span class="skill-cat-en">/ ${category.nameEn}</span>
+            </h3>
+            <div class="skill-rows">
+                ${category.rows.map(renderSkillRow).join('')}
+            </div>
+        </div>
+    `;
+
+    skillsGrid.innerHTML = skillCategories.map(renderSkillBlock).join('');
+}
+
+// ============================
+// 2. 少し下にスクロールしたら、ヘッダーの見た目を変える
 // ============================
 const header = document.getElementById('header');
 
@@ -44,7 +151,7 @@ window.addEventListener('scroll', onScroll, { passive: true });
 onScroll();
 
 // ============================
-// 2. スマホのメニューを、ボタンで開け閉めする
+// 3. スマホのメニューを、ボタンで開け閉めする
 // ============================
 const navToggle = document.getElementById('navToggle');
 const nav = document.getElementById('nav');
@@ -65,7 +172,7 @@ document.querySelectorAll('.nav-list a').forEach((link) => {
 });
 
 // ============================
-// 3. スクロールでその部分が画面に入ったら、文字や画像をじわっと表示する
+// 4. スクロールでその部分が画面に入ったら、文字や画像をじわっと表示する
 // （見た目の変化は CSS 側。一度出したらそれっきり）
 // ============================
 const fadeTargets = document.querySelectorAll('.fade-in, .fade-in-up');
@@ -110,7 +217,7 @@ window.addEventListener('load', () => {
 });
 
 // ============================
-// 4. メニューのリンクを押したら、その場所までなめらかに移動する
+// 5. メニューのリンクを押したら、その場所までなめらかに移動する
 // （固定ヘッダーに隠れないよう、ヘッダーの高さぶん上で止める）
 // ============================
 document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
@@ -135,7 +242,7 @@ document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
 });
 
 // ============================
-// 5. いま読んでいる場所を、上のメニューで示す（下線が動く）
+// 6. いま読んでいる場所を、上のメニューで示す（下線が動く）
 // ============================
 const spyLinks = Array.from(document.querySelectorAll('.nav-list a[href^="#"]'));
 
@@ -237,7 +344,7 @@ if (spyLinks.length) {
 }
 
 // ============================
-// 6. スキル欄の棒グラフを、画面に入ったら伸ばして見せる
+// 7. スキル欄の棒グラフを、画面に入ったら伸ばして見せる
 // （伸ばす長さは、各行に書いた data-level の数値ぶん）
 // ============================
 const skillBlocks = document.querySelectorAll('.skill-block');
@@ -282,7 +389,7 @@ if (skillBlocks.length) {
 }
 
 // ============================
-// 7. 数字を 0 から目標の数まで数え上げて表示する
+// 8. 数字を 0 から目標の数まで数え上げて表示する
 // （目標の数は data-count-to に書いてある。画面に入ったら1回だけ動く）
 // ============================
 const countTargets = document.querySelectorAll('.count-up');
@@ -338,7 +445,7 @@ if (countTargets.length) {
 }
 
 // ============================
-// 8. 「受託開発実績」の各項目を、見出しクリックで開け閉めする
+// 9. 「受託開発実績」の各項目を、見出しクリックで開け閉めする
 // （高さを 0 ⇔ 中身の高さ で切り替えてスライドさせる）
 // ============================
 const expItems = document.querySelectorAll('.exp-item');
@@ -388,7 +495,7 @@ window.addEventListener('resize', () => {
 });
 
 // ============================
-// 9. トップの大きな背景画像を、スクロールに合わせて少し動かす（奥行きを出す）
+// 10. トップの大きな背景画像を、スクロールに合わせて少し動かす（奥行きを出す）
 // ============================
 const heroBg = document.querySelector('.hero-bg');
 if (heroBg) {
@@ -416,7 +523,7 @@ if (heroBg) {
 }
 
 // ============================
-// 10. 画像をクリックで大きく表示する（ライトボックス）
+// 11. 画像をクリックで大きく表示する（ライトボックス）
 // 趣味ギャラリーと Works の実績画像を、それぞれ独立した一組として扱う
 // （閉じる: ×ボタン / 背景クリック / Esc　　前後の画像: ◂ ▸ ボタン / ← → キー）
 // ============================
@@ -558,7 +665,7 @@ if (worksTriggers.length) {
 }
 
 // ============================
-// 11. Works の作品を、使った技術で絞り込んで表示する
+// 12. Works の作品を、使った技術で絞り込んで表示する
 // （タブを選ぶと、その技術を使った作品だけ表示。ほかは隠す）
 // ============================
 const worksFilter = document.querySelector('.works-filter');
@@ -623,7 +730,7 @@ if (worksFilter && worksGrid) {
 }
 
 // ============================
-// 12. ダーク / ライトのテーマを切り替える（選んだテーマはブラウザに保存）
+// 13. ダーク / ライトのテーマを切り替える（選んだテーマはブラウザに保存）
 // （最初のテーマ適用は <head> の先読みスクリプトが済ませている）
 // ============================
 const themeToggle = document.getElementById('themeToggle');
@@ -677,7 +784,7 @@ if (themeToggle) {
 }
 
 // ============================
-// 13. 一定量スクロールしたら「トップへ戻る」ボタンを出す
+// 14. 一定量スクロールしたら「トップへ戻る」ボタンを出す
 // ============================
 const backToTop = document.getElementById('backToTop');
 
