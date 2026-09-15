@@ -1008,15 +1008,9 @@ ul {
     background: var(--c-text);
 }
 
-/* Bar width & stagger are driven by JS from each row's data-level
-   (see "Skill bars" in script.js). These rules are a no-JS fallback. */
-.skill-block.is-visible .skill-row-practical .skill-row-bar-fill {
-    width: 80%;
-}
-
-.skill-block.is-visible .skill-row-learning .skill-row-bar-fill {
-    width: 50%;
-}
+/* 棒の幅・遅延は各行の data-level から JS が設定する（script.js の
+   「スキル欄の棒グラフ」参照）。このサイトは他の機能も JS 前提のため、
+   CSSだけのフォールバックは持たない。 */
 
 @media (prefers-reduced-motion: reduce) {
     .skill-row-bar-fill {
