@@ -254,6 +254,25 @@ ul {
     border-bottom-color: var(--c-line);
 }
 
+/* ページの読了度を示す細いバー。ヘッダーより手前に固定表示し、
+   幅を scroll イベントの中で直接更新する（script.js の 2番） */
+.scroll-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 0%;
+    height: 3px;
+    z-index: 101;
+    background-color: var(--c-accent);
+    transition: width 0.15s linear;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .scroll-progress {
+        transition: none;
+    }
+}
+
 .header-inner {
     max-width: var(--max-wide);
     margin: 0 auto;
