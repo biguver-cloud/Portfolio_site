@@ -4,7 +4,7 @@
 //
 //  0. 「動きを減らす」設定（OS側の指定）を一箇所でまとめて判定する
 //  1. Skills の中身を一覧表（データ）から自動で組み立てる
-//  2. スクロールでヘッダーの見た目を変える
+//  2. スクロールでヘッダーの見た目を変える・読了度バーを伸ばす
 //  3. スマホのメニューを開け閉めする
 //  4. スクロールで文字や画像をじわっと表示する
 //  5. メニューのリンクで、その場所へなめらかに移動する
@@ -136,14 +136,23 @@ if (skillsGrid) {
 
 // ============================
 // 2. 少し下にスクロールしたら、ヘッダーの見た目を変える
+// あわせて、ページをどこまで読んだかを示す細いバーの幅も更新する
 // ============================
 const header = document.getElementById('header');
+const scrollProgress = document.getElementById('scrollProgress');
 
 const onScroll = () => {
     if (window.scrollY > 30) {
         header.classList.add('scrolled');
     } else {
         header.classList.remove('scrolled');
+    }
+
+    if (scrollProgress) {
+        // ページ全体のうち、あと何%スクロールできるか
+        const scrollable = document.documentElement.scrollHeight - window.innerHeight;
+        const progress = scrollable > 0 ? (window.scrollY / scrollable) * 100 : 0;
+        scrollProgress.style.width = `${Math.min(100, Math.max(0, progress))}%`;
     }
 };
 
