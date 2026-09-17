@@ -4,19 +4,20 @@
 //
 //  0. 「動きを減らす」設定（OS側の指定）を一箇所でまとめて判定する
 //  1. Skills の中身を一覧表（データ）から自動で組み立てる
-//  2. スクロールでヘッダーの見た目を変える・読了度バーを伸ばす
-//  3. スマホのメニューを開け閉めする
-//  4. スクロールで文字や画像をじわっと表示する
-//  5. メニューのリンクで、その場所へなめらかに移動する
-//  6. いま読んでいる場所を上のメニューで示す
-//  7. スキルの棒グラフを伸ばして見せる
-//  8. 数字を 0 から目標の数まで数え上げる
-//  9. 「受託開発実績」の各項目を開け閉めする
-// 10. トップの背景画像をスクロールに合わせて少し動かす
-// 11. 趣味ギャラリーの画像を大きく表示する
-// 12. Works の作品を、使った技術で絞り込む
-// 13. ダーク / ライトのテーマを切り替える
-// 14. 一定量スクロールしたら「トップへ戻る」ボタンを出す
+//  2. Career の中身を一覧表（データ）から自動で組み立てる
+//  3. スクロールでヘッダーの見た目を変える・読了度バーを伸ばす
+//  4. スマホのメニューを開け閉めする
+//  5. スクロールで文字や画像をじわっと表示する
+//  6. メニューのリンクで、その場所へなめらかに移動する
+//  7. いま読んでいる場所を上のメニューで示す
+//  8. スキルの棒グラフを伸ばして見せる
+//  9. 数字を 0 から目標の数まで数え上げる
+// 10. 「受託開発実績」の各項目を開け閉めする
+// 11. トップの背景画像をスクロールに合わせて少し動かす
+// 12. 趣味ギャラリーの画像を大きく表示する
+// 13. Works の作品を、使った技術で絞り込む
+// 14. ダーク / ライトのテーマを切り替える
+// 15. 一定量スクロールしたら「トップへ戻る」ボタンを出す
 // ============================================================
 
 
@@ -135,7 +136,99 @@ if (skillsGrid) {
 }
 
 // ============================
-// 2. 少し下にスクロールしたら、ヘッダーの見た目を変える
+// 2. Career の中身を一覧表（データ）から自動で組み立てる
+// （Skills と同じ理由で、フェードイン監視・カウントアップ監視より
+//   先に実行する必要がある）
+// ============================
+const careerTimeline = document.getElementById('careerTimeline');
+
+if (careerTimeline) {
+    // 経歴の一覧表。増やしたいときはここに1件足すだけでよい。
+    // desc は <br> や <span class="count-up"> をそのまま含められる
+    const careerItems = [
+        {
+            period: 'now',
+            company: '生成AI開発に挑戦中！',
+            label: 'CURRENT',
+            desc:
+                'Python・LangChain・RAGを活用したポートフォリオ開発を継続中。<br>' +
+                '副業にて受託開発案件を<span class="count-up" data-count-to="2">0</span>件経験。<br>' +
+                'G検定に合格（2026年5月）し、AI・機械学習領域の基礎知識を体系的に習得。',
+        },
+        {
+            period: '2025',
+            company: 'オンラインスクールを卒業',
+            label: 'LEARNING',
+            desc:
+                'DMM生成AIキャンプ：生成AIエンジニアコース<br>' +
+                '（8週間コース / 期間：10月初旬〜12月中旬）<br>' +
+                'Python・LangChain・RAGシステム・AIエージェント開発を習得。',
+            link: {
+                href: 'https://www.openbadge-global.com/ns/portal/openbadge/public/assertions/user/Z1F3MjB3YjlITEdtWnVMUThqMG9oZz09',
+                text: 'オープンバッジはこちら →',
+            },
+        },
+        {
+            period: '2024',
+            company: '社内AI活用コンテストに参加',
+            label: 'TURNING POINT',
+            accent: true, // 転機となった出来事にアクセントカラーを付ける
+            desc:
+                'メンタルヘルスに特化したGPTsを作成して応募。<br>' +
+                '悩み相談・CBTテスト・睡眠／食生活管理機能を実装。<br>' +
+                'メンタルヘルスという重要なテーマへの自主的な挑戦が評価され、GRIT賞を受賞。<br>' +
+                'しかし「ツールを使う側」ではなく「0からアプリを作れる側」になりたい。<br>' +
+                'この想いがエンジニアを目指す原点となった。',
+        },
+        {
+            period: '2023 –',
+            company: 'チャットオペレーター',
+            label: 'CURRENT ROLE',
+            desc:
+                '格安SIMのオンラインショップにて顧客対応を担当。<br>' +
+                '新人教育・KPI進捗管理など、現場のオペレーション全般を担っている。',
+        },
+        {
+            period: '2017 – 2021',
+            company: 'RPO / BPO 領域での業務',
+            label: 'CAREER',
+            desc:
+                '求人媒体の進捗管理・新卒／中途採用支援を担当。<br>' +
+                '<span class="count-up" data-count-to="10">0</span>名規模のチームマネジメントや研修担当など、幅広い業務を経験。',
+        },
+    ];
+
+    // 1件ぶんの .timeline-item を組み立てる
+    const renderTimelineItem = (item) => {
+        const dotClass = item.accent ? 'timeline-dot timeline-dot-accent' : 'timeline-dot';
+        const labelClass = item.accent ? 'timeline-label timeline-label-accent' : 'timeline-label';
+        const linkHtml = item.link
+            ? `<a href="${item.link.href}" class="timeline-link" target="_blank" rel="noopener">${item.link.text}</a>`
+            : '';
+
+        return `
+            <div class="timeline-item fade-in-up">
+                <div class="${dotClass}"></div>
+                <div class="timeline-content">
+                    <span class="timeline-period">${item.period}</span>
+                    <div class="timeline-head">
+                        <h3 class="timeline-company">${item.company}</h3>
+                        <span class="${labelClass}">${item.label}</span>
+                    </div>
+                    <p class="timeline-desc">
+                        ${item.desc}
+                    </p>
+                    ${linkHtml}
+                </div>
+            </div>
+        `;
+    };
+
+    careerTimeline.innerHTML = careerItems.map(renderTimelineItem).join('');
+}
+
+// ============================
+// 3. 少し下にスクロールしたら、ヘッダーの見た目を変える
 // あわせて、ページをどこまで読んだかを示す細いバーの幅も更新する
 // ============================
 const header = document.getElementById('header');
@@ -160,7 +253,7 @@ window.addEventListener('scroll', onScroll, { passive: true });
 onScroll();
 
 // ============================
-// 3. スマホのメニューを、ボタンで開け閉めする
+// 4. スマホのメニューを、ボタンで開け閉めする
 // ============================
 const navToggle = document.getElementById('navToggle');
 const nav = document.getElementById('nav');
@@ -181,7 +274,7 @@ document.querySelectorAll('.nav-list a').forEach((link) => {
 });
 
 // ============================
-// 4. スクロールでその部分が画面に入ったら、文字や画像をじわっと表示する
+// 5. スクロールでその部分が画面に入ったら、文字や画像をじわっと表示する
 // （見た目の変化は CSS 側。一度出したらそれっきり）
 // ============================
 const fadeTargets = document.querySelectorAll('.fade-in, .fade-in-up');
@@ -226,7 +319,7 @@ window.addEventListener('load', () => {
 });
 
 // ============================
-// 5. メニューのリンクを押したら、その場所までなめらかに移動する
+// 6. メニューのリンクを押したら、その場所までなめらかに移動する
 // （固定ヘッダーに隠れないよう、ヘッダーの高さぶん上で止める）
 // ============================
 document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
@@ -251,7 +344,7 @@ document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
 });
 
 // ============================
-// 6. いま読んでいる場所を、上のメニューで示す（下線が動く）
+// 7. いま読んでいる場所を、上のメニューで示す（下線が動く）
 // ============================
 const spyLinks = Array.from(document.querySelectorAll('.nav-list a[href^="#"]'));
 
@@ -353,7 +446,7 @@ if (spyLinks.length) {
 }
 
 // ============================
-// 7. スキル欄の棒グラフを、画面に入ったら伸ばして見せる
+// 8. スキル欄の棒グラフを、画面に入ったら伸ばして見せる
 // （伸ばす長さは、各行に書いた data-level の数値ぶん）
 // ============================
 const skillBlocks = document.querySelectorAll('.skill-block');
@@ -400,7 +493,7 @@ if (skillBlocks.length) {
 }
 
 // ============================
-// 8. 数字を 0 から目標の数まで数え上げて表示する
+// 9. 数字を 0 から目標の数まで数え上げて表示する
 // （目標の数は data-count-to に書いてある。画面に入ったら1回だけ動く）
 // ============================
 const countTargets = document.querySelectorAll('.count-up');
@@ -456,7 +549,7 @@ if (countTargets.length) {
 }
 
 // ============================
-// 9. 「受託開発実績」の各項目を、見出しクリックで開け閉めする
+// 10. 「受託開発実績」の各項目を、見出しクリックで開け閉めする
 // （高さを 0 ⇔ 中身の高さ で切り替えてスライドさせる）
 // ============================
 const expItems = document.querySelectorAll('.exp-item');
@@ -506,7 +599,7 @@ window.addEventListener('resize', () => {
 });
 
 // ============================
-// 10. トップの大きな背景画像を、スクロールに合わせて少し動かす（奥行きを出す）
+// 11. トップの大きな背景画像を、スクロールに合わせて少し動かす（奥行きを出す）
 // ============================
 const heroBg = document.querySelector('.hero-bg');
 if (heroBg) {
@@ -534,7 +627,7 @@ if (heroBg) {
 }
 
 // ============================
-// 11. 画像をクリックで大きく表示する（ライトボックス）
+// 12. 画像をクリックで大きく表示する（ライトボックス）
 // 趣味ギャラリーと Works の実績画像を、それぞれ独立した一組として扱う
 // （閉じる: ×ボタン / 背景クリック / Esc　　前後の画像: ◂ ▸ ボタン / ← → キー）
 // ============================
@@ -676,7 +769,7 @@ if (worksTriggers.length) {
 }
 
 // ============================
-// 12. Works の作品を、使った技術で絞り込んで表示する
+// 13. Works の作品を、使った技術で絞り込んで表示する
 // （タブを選ぶと、その技術を使った作品だけ表示。ほかは隠す）
 // ============================
 const worksFilter = document.querySelector('.works-filter');
@@ -741,7 +834,7 @@ if (worksFilter && worksGrid) {
 }
 
 // ============================
-// 13. ダーク / ライトのテーマを切り替える（選んだテーマはブラウザに保存）
+// 14. ダーク / ライトのテーマを切り替える（選んだテーマはブラウザに保存）
 // （最初のテーマ適用は <head> の先読みスクリプトが済ませている）
 // ============================
 const themeToggle = document.getElementById('themeToggle');
@@ -795,7 +888,7 @@ if (themeToggle) {
 }
 
 // ============================
-// 14. 一定量スクロールしたら「トップへ戻る」ボタンを出す
+// 15. 一定量スクロールしたら「トップへ戻る」ボタンを出す
 // ============================
 const backToTop = document.getElementById('backToTop');
 
