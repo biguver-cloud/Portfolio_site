@@ -2246,6 +2246,45 @@ ul {
 }
 
 /* ============================
+   Image loading skeleton
+============================= */
+/* 画像が読み込まれるまで、うっすら光るプレースホルダーを背景に表示する
+   （JS が読み込み完了/失敗を検知してクラスを外す） */
+.js-lazy-img {
+    background-image: linear-gradient(
+        100deg,
+        var(--c-bg-soft) 30%,
+        var(--c-line) 50%,
+        var(--c-bg-soft) 70%
+    );
+    background-size: 200% 100%;
+    animation: imgShimmer 1.4s ease-in-out infinite;
+}
+
+.is-loaded {
+    transition: opacity 0.4s var(--ease);
+}
+
+@keyframes imgShimmer {
+    0% {
+        background-position: 200% 0;
+    }
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .js-lazy-img {
+        animation: none;
+    }
+
+    .is-loaded {
+        transition: none;
+    }
+}
+
+/* ============================
    Fade-in Animations
 ============================= */
 .fade-in,
