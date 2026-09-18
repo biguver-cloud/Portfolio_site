@@ -18,6 +18,7 @@
 // 13. Works の作品を、使った技術で絞り込む
 // 14. ダーク / ライトのテーマを切り替える
 // 15. 一定量スクロールしたら「トップへ戻る」ボタンを出す
+// 16. 画像に読み込み中のプレースホルダーを出す
 // ============================================================
 
 
@@ -920,3 +921,40 @@ if (backToTop) {
         window.scrollTo({ top: 0, behavior: prefersReducedMotion() ? 'auto' : 'smooth' });
     });
 }
+
+// ============================
+// 16. Works / Hobby の画像に、読み込み中はうっすら光る
+// プレースホルダーを出す（読み込み完了でフェードして写真に切り替える）
+// ============================
+const lazyImages = document.querySelectorAll('.js-lazy-img');
+
+lazyImages.forEach((img) => {
+    // 読み込み完了：プレースホルダーを外し、画像をフェードインさせる
+    const reveal = () => {
+        img.classList.remove('js-lazy-img');
+        img.style.opacity = '0';
+        void img.offsetWidth; // 強制リフローで、直前の状態を確定させてからフェードさせる
+        img.classList.add('is-loaded');
+        img.style.opacity = '1';
+    };
+
+    // 読み込み失敗：光らせたままにせず、素の表示（altテキスト）に戻す
+    const showBroken = () => {
+        img.classList.remove('js-lazy-img');
+        img.style.opacity = '1';
+    };
+
+    // このスクリプトは body の末尾で読み込まれるため、キャッシュ済みの画像は
+    // すでに読み込みが終わっていて load イベントが発火しないことがある
+    if (img.complete) {
+        if (img.naturalWidth > 0) {
+            reveal();
+        } else {
+            showBroken();
+        }
+        return;
+    }
+
+    img.addEventListener('load', reveal, { once: true });
+    img.addEventListener('error', showBroken, { once: true });
+});
