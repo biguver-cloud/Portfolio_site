@@ -1406,7 +1406,7 @@ ul {
     text-transform: uppercase;
 }
 
-.exp-status-active {
+.exp-status-paused {
     color: var(--c-text);
     background-color: transparent;
     border: 1px solid var(--c-text);
