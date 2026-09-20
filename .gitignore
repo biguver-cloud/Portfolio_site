@@ -32,13 +32,6 @@ assets/images/about/profile.jpg
 assets/images/about/姫野_画像_20240507.jpg
 assets/images/hero/青島ベンチ.jpg
 
-# ============================
-# 著作権のある画像（第三者IP）
-# ============================
-assets/images/hobby/kyoujuro_rengoku.jpg
-assets/images/hobby/onepiece_firm_red.jpg
-assets/images/hobby/jujutsukaisenn.jpg
-
 # wrangler files
 .wrangler
 .dev.vars*
