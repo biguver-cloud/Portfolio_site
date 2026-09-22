@@ -7,6 +7,43 @@ HTML / CSS / JavaScript のみで構成したシングルページサイトで�
 
 ---
 
+## 🖼️ プレビュー
+
+### Hero
+
+![Hero](.github/readme/hero.jpg)
+
+### ライト / ダークモード
+
+| Light | Dark |
+|---|---|
+| ![Light mode](.github/readme/light-mode.jpg) | ![Dark mode](.github/readme/dark-mode.jpg) |
+
+### Works（カテゴリフィルタ）
+
+![Works](.github/readme/works.jpg)
+
+### モバイル表示
+
+<img src=".github/readme/mobile.jpeg" width="280" alt="モバイル表示">
+
+---
+
+## 🧩 機能一覧
+
+サイト自体はHTML/CSS/JavaScriptのみで構成されていますが、JavaScriptでのインタラクション実装に力を入れています。
+
+- **スクロールスパイ** — 現在表示中のセクションをナビゲーションのハイライトに反映
+- **スキルバー / カウントアップアニメーション** — `IntersectionObserver` と `requestAnimationFrame` によるスクロール連動アニメーション
+- **ライトボックス** — 趣味ギャラリー・Works実績画像を拡大表示（フォーカストラップ・矢印キー移動・Escで閉じる）
+- **Works カテゴリフィルタ** — 使用技術タグでプロジェクトを絞り込み
+- **ダーク / ライトテーマ切替** — 選択を `localStorage` に保存、未選択時はOSの設定に追従
+- **スクロール進捗バー** — ページの読了度を可視化
+- **画像スケルトン表示** — 画像読み込み中はプレースホルダーを表示し、体感速度を改善
+- **アクセシビリティ配慮** — キーボード操作・フォーカス管理に加え、`prefers-reduced-motion` を一括で判定する共通ガードで、動きを減らす設定のユーザーにはアニメーションを抑制
+
+---
+
 ## 🎓 目的
 
 - エンジニア転向の意思と経緯を伝えるポートフォリオとして制作
@@ -41,6 +78,8 @@ portfolio-site/
 ├── wrangler.jsonc          # Cloudflare Workers（静的アセット配信）設定
 ├── .gitignore
 ├── README.md
+├── .github/
+│   └── readme/             # README用プレビュー画像（`.`始まりのため本番デプロイ対象外）
 └── assets/
     ├── css/
     │   └── style.css       # 全スタイル（変数・レイアウト・アニメーション・レスポンシブ）
