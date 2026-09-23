@@ -42,7 +42,7 @@ HTML / CSS / JavaScript のみで構成したシングルページサイトで�
 
 ### モバイル表示
 
-<img src=".github/readme/mobile.jpeg" width="280" alt="モバイル表示（Hero）"> <img src=".github/readme/mobile_2.jpeg" width="280" alt="モバイル表示（Skills）">
+<img src=".github/readme/mobile.jpeg" width="280" alt="モバイル表示（Hero）" style="margin-right: 24px;"> <img src=".github/readme/mobile_2.jpeg" width="280" alt="モバイル表示（Skills）">
 
 ---
 
